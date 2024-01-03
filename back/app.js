@@ -14,23 +14,31 @@ const DEBUG = true;
 
 // Import required modules
 const express = require('express');
-const { connPool } = require('./config/server');
+const { poolPromise } = require('./config/server');
 
 // Server and Port settings
 const app = express();
 const PORT = 80;
 
-_ = connPool;
+let connPool;
 
 // Run server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    connPool = await poolPromise;
+    console.log('Connected to COMP DB.');
     console.log(`Opened in port ${PORT}`);
+})
+
+app.get('/', async (_, res) => {
+    res.send('Usage:\n'
+    + '/api/test/test : test connection\n'
+    + '/api/test/getall : get all data from DB\n');
 })
 
 // Test
 app.get('/api/test/test', async (req, res) => { res.send('Success!'); });
 app.get('/api/test/getall', async (req, res) => {
-    connPool.request().query('SELECT * FROM Restaurants');
+    const result = await connPool.request().query("SELECT * FROM Restaurants");
     res.send(result.recordset);
 })
 

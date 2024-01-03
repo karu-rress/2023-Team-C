@@ -13,29 +13,16 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const config = {
-  port: process.env.PORT,
-  dbconfig: {
     server: process.env.DB_DEV_SERVER,
-    pool: {
-      max: 5,
-      min: 1,
-      idleTimeoutMillis: 30000,
+	datebase: 'COMP',//process.env.DB_DEV_DATEBASE,
+	user: process.env.DB_DEV_USERNAME,
+	password: process.env.DB_DEV_PASSOWRD,
+	options: {
+        encrypt: true,
+		database: 'COMP'
     },
-    options: {
-      encrypt: true,
-      datebase: process.env.DB_DEV_DATEBASE,
-      trustServerCertificate: true,
-    },
-    authentication: {
-      type: 'default',
-      options: {
-        userName: process.env.DB_DEV_USERNAME,
-        password: process.env.DB_DEV_PASSOWRD,
-      },
-    },
-  },
-};
+}
 
 module.exports = {
-    config
+	config
 }
