@@ -1,15 +1,24 @@
+/**
+ * 
+ *  server.js
+ *  SQL server configuration
+ * 
+ *  Created: 2024-01-03
+ *  Last modified: -
+ * 
+ */
+
 const sql = require('mssql');
 const { config } = require('./config.js');
 
-const connPool = new sql.ConnectionPool(config.dbconfig).connect()
-  .then((pool) => { console.log('Connected to COMP DB.'); return pool; })
-  .catch((err) => { console.log('DB connection error', err); })
+const poolPromise = new sql.ConnectionPool(config)
+	.connect()
+	.then(pool => {
+		console.log('DB에 연결되었습니다.');
+		return pool;
+	})
+	.catch(err => console.log('DB 연결에 실패하였습니다: ', err))
 
 module.exports = {
-  sql,
-  connPool
+	sql, poolPromise
 }
-
-
-// connPool = Promise<void | XXX>
-// 이거 await을 제대로 해야 함...
