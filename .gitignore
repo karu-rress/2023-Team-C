@@ -1,6 +1,5 @@
 back/COMP/
 .env
-back/node_modules
-front/node_modules
+node_modules
 api_key.js
 index.html
