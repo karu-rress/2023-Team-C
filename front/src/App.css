@@ -2,14 +2,6 @@
   text-align: center;
 }
 
-
-.marker-content {
-  color: black;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,7 +27,6 @@
 .App-link {
   color: #61dafb;
 }
-
 
 @keyframes App-logo-spin {
   from {
