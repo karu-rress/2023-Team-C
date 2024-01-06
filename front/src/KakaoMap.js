@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
 function KakaoMap() {
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchResult, setSearchResult] = useState(null);
+
     useEffect(() => {
-        // Kakao 객체가 사용 가능한지 확인합니다.
         if (window.kakao) {
           const container = document.getElementById('kakaomap');
           const options = {
@@ -14,47 +16,43 @@ function KakaoMap() {
     
           const positions = [
             {
-              content: '<div class="marker-content">미니자이언트</div>',
+              content: '<div class="wrap">' +
+              '    <div class="info">' +
+              '        <div class="title">' +
+              '            미니자이언트' +
+              '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' +
+              '        </div>' +
+              '        <div class="body">' +
+              '            <div class="img">' +
+              '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="53" height="50">' +
+              '           </div>' +
+              '            <div class="desc">' +
+              '                <div class="ellipsis">흑석로 81-6 1층</div>' +
+              '                <div class="jibun ellipsis">대표메뉴</div>' +
+              '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
+              '            </div>' +
+              '        </div>' +
+              '    </div>' +
+              '</div>',
               latlng: new window.kakao.maps.LatLng(37.5072, 126.9586)
             },
-            {
-              content: '<div class="marker-content">미묘라멘</div>',
-              latlng: new window.kakao.maps.LatLng(37.508, 126.9626)
-            },
-            {
-              content: '<div class="marker-content">미소야</div>',
-              latlng: new window.kakao.maps.LatLng(37.5085, 126.9611)
-            },
-            {
-              content: '<div class="marker-content">미스사이공</div>',
-              latlng: new window.kakao.maps.LatLng(37.5034, 126.9489)
-            }
           ];
     
           for (let pos of positions) {
             let marker = new window.kakao.maps.Marker({
-              map: map,
-              position: pos.latlng
+                map: map,
+                position: pos.latlng,
+                // clickable: true
             });
+
+            let overlay = new window.kakao.maps.CustomOverlay({
+                content: pos.content,
+                map: map,
+                position: marker.getPosition()
+            })
     
-            let infowindow = new window.kakao.maps.InfoWindow({
-              content: pos.content
-            });
-    
-            window.kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-            window.kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
-          }
-    
-          function makeOverListener(map, marker, infowindow) {
-            return function () {
-              infowindow.open(map, marker);
-            };
-          }
-    
-          function makeOutListener(infowindow) {
-            return function () {
-              infowindow.close();
-            };
+            window.kakao.maps.event.addListener(marker, 'click', () => overlay.setMap(map));
+            window.closeOverlay = () => overlay.setMap(null);
           }
         }
       }, []);
