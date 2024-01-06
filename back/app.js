@@ -21,7 +21,7 @@ const app = express();
 const PORT = 8080;
 
 let connPool;
-
+ 
 // Enable CORS for all routes
 app.use((_, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -83,12 +83,12 @@ app.get('/search/:query', async (req, res) => {
     try {
         let { query } = req.params;
         const result = await connPool.request()
-            .input('query', mssql.NVarChar, `%${query}%`)
+            .input('query', sql.NVarChar, `%${query}%`)
             .query('SELECT * FROM Restaurants WHERE name LIKE @query');
         res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('No result found.');
+        res.status(404).send('No results found.');
     }
 });
 

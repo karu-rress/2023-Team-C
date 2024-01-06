@@ -15,18 +15,15 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  const [searchResult, setSearchResult] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearch = (searchTerm) => {
-    alert('검색어:' + searchTerm);
-    setSearchResult(`검색 결과: ${searchTerm}`);
-  };
+  const handleSearch = (st) => { setSearchTerm(st); };
 
   return (
     <div>
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
-      <KakaoMap/>
+      <KakaoMap search={searchTerm}/>
     </div>
   );
 }
