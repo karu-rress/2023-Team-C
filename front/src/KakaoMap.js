@@ -92,6 +92,9 @@ function KakaoMap() {
         // 가게 핀 추가 (for ~ of 사용 필요)
         AddMarker(map, "맛있는 집", "음식점", "02-1234-5678", 
             new kakao_map.LatLng(37.5072, 126.9586));
+
+        AddMarker(map, "맛집","돈가스", "010-1111-1111",
+            new kakao_map.LatLng(37.5073, 126.9597));    
     }, []);
 
     return (
