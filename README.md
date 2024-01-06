@@ -8,3 +8,6 @@ back
 - npm install mssql
 - npm install express
 - npm install dotenv
+
+Running on
+http://20.205.239.240:8080/
