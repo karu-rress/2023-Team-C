@@ -1,6 +1,6 @@
 #kakaomap {
     width: 100vw;
-    height: 100vh; /* 100vh - 110px */
+    height: calc(100vh - 110px);
 }
 
 .wrap {

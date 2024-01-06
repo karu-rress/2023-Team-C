@@ -14,8 +14,11 @@ import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
 const api_address = 'http://20.205.239.240:8080';
+
+
+let index = 0
 /**
- * 
+ * 마커를 추가하는 함수
  * @param {kakao_map.Map} map 
  * @param {string} name 
  * @param {string} signature 
@@ -24,63 +27,73 @@ const api_address = 'http://20.205.239.240:8080';
  * @param {*} time
  */
 function AddMarker(map, name, signature, phone, latlng, time = null) {
-    // var d = new Date(); // for now
- //d.getHours(); // => 9
-//d.getMinutes(); // =>  30
-//d.getSeconds(); // => 51
+    const current_time = new Date(); // for now
+    const [hour, min] = [current_time.getHours(), current_time.getMinutes()];
 
-    let isOpened = true;
-    // 아 이거 시간 보고...
+    let isOpened;
+    // TODO: 프론트 => 현재 시간을 바탕으로, 가게가 열렸는지 혹은 닫혔는지
+    // 결정하여 isOpened에 true 혹은 false를 대입해주세요.
 
-    const content = `<div class="wrap">
-    <div class="info">
-        <div class="title">
-        ${name}
-        <div class="close" onclick="closeOverlay()" title="닫기"></div>
-        </div>
-        <div class="body">
-        <div class="desc">
-            <div class="signature">${signature}</div>
-            <div class="opened">${isOpened ? "영업중" : "영업종료"}</div>
-            <div class="phone">${phone}</div>
-        </div>
-        </div>
-    </div>
-    </div>`;
 
+
+
+
+
+    // 맛집 표시 마커
     const marker = new window.kakao.maps.Marker({
         map: map,
         position: latlng,
     });
 
+    // 맛집 오버레이
     const overlay = new window.kakao.maps.CustomOverlay({
-        content: content,
+        content: `<div class="wrap">
+        <div class="info">
+            <div class="title">
+            ${name}
+            <div class="close" onclick="closeOverlay${index}()" title="닫기"></div>
+            </div>
+            <div class="body">
+            <div class="desc">
+                <div class="signature">${signature}</div>
+                <div class="opened">${isOpened ? "영업중" : "영업종료"}</div>
+                <div class="phone">${phone}</div>
+            </div>
+            </div>
+        </div>
+        </div>`,
         map: map,
         position: marker.getPosition()
     })
 
-    window.kakao.maps.event.addListener(marker, 'click', () => overlay.setMap(map));
-    window.closeOverlay = () => overlay.setMap(null);
+    // 마커 생성 (토글 가능) 및 오버레이 끄기
+    window.kakao.maps.event.addListener(marker, 'click',
+        () => overlay.setMap(overlay.getMap() ? null : map));
+    overlay.setMap(null);
+
+    // X버튼 클릭시, 오버레이에 해당하는 창만 끄기
+    eval(`window.closeOverlay${index} = () => { overlay.setMap(null); }`);
+    index++;
 }
 
-async function fetchAsync() {
+
+/**
+ * path에 해당하는 데이터를 GET 하여 반환하는 함수
+ * @param {string} path TastyNav API 경로
+ * @returns 파싱한 object
+ */
+async function fetchAsync(path) {
     try {
         const response = await fetch(api_address + '/getall');
-        alert(response.status);
-        const result = await response.json();
-        alert(result);
+        return await response.json();
     }
     catch (err) {
-        alert('Error! ' + err);
+        alert('에러가 발생했습니다.\n' + err);
     }
 }
 
-function KakaoMap() {
-    const [searchResult, setSearchResult] = useState(null);
-    // const [data, setData] = useState(null);
-
+function KakaoMap({ search }) {
     // 처음 지도가 표시될 때의 위치
-    //주소
     const initPos = { lat: 37.5051, lng: 126.9571 };
 
     useEffect(() => {
@@ -97,22 +110,36 @@ function KakaoMap() {
         };
         const map = new kakao_map.Map(container, options);
 
-        const response = fetch('http://20.205.239.240:8080/getall')
-            .then(res => res)
-            .catch(res => alert('error'));
-        alert(response.status);
-        // fetchAsync().then();
-
-        // 가게 핀 추가 (for ~ of 사용 필요)
-        AddMarker(map, "맛있는 집", "음식점", "02-1234-5678", 
-            new kakao_map.LatLng(37.5072, 126.9586));
-
-        AddMarker(map, "맛집","돈가스", "010-1111-1111",
-            new kakao_map.LatLng(37.5073, 126.9597));    
-
-        AddMarker(map, "라멘집","라면", "0507-9999-8888",
-            new kakao_map.LatLng(37.5074, 126.9601));    
-    }, []);
+        if (search != null) {
+            fetchAsync('/search/' + search).then(restaurants => {
+                for (let res of restaurants) {
+                AddMarker(map, res.name, res.signature, res.phone,
+                    new kakao_map.LatLng(res.latitude, res.longitude),
+                    {
+                        open: res.openTime,
+                        close: res.closeTime,
+                        breakStart: res.breakStart,
+                        breakEnd: res.breakEnd,
+                    });
+                }
+            });
+        }
+        else {
+            // 전체 맛집 목록을 순회한 후, 하나씩 마커를 생성
+            fetchAsync('/getall').then(restaurants => {
+                for (let res of restaurants) {
+                AddMarker(map, res.name, res.signature, res.phone,
+                    new kakao_map.LatLng(res.latitude, res.longitude),
+                    {
+                        open: res.openTime,
+                        close: res.closeTime,
+                        breakStart: res.breakStart,
+                        breakEnd: res.breakEnd,
+                    });
+                }
+            });
+        }
+    }, [search]);
 
     return (
         <div id="kakaomap" />

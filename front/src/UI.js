@@ -4,7 +4,7 @@ import './UI.css';
 function TitleBar() {
     return (
         <div id="titlebar">
-            <label id="title">TastyNav</label>
+            <div id="title">TastyNav</div>
         </div>
     );
 }
