@@ -88,6 +88,8 @@ function AddMarker(map, name, signature, phone, latlng, time = null) {
 async function fetchAsync(path) {
     try {
         const response = await fetch(api_address + path);
+        if (response.status >= 400)
+            return [response.status, null];
         return [response.status, await response.json()];
     }
     catch (err) {
@@ -112,9 +114,8 @@ function KakaoMap({ search }) {
 
         if (search) {
             fetchAsync('/search/' + search).then(([status, restaurants]) => {
-                alert('status: ' + status)
-                if (status !== 200) {
-                    alert('Not found');
+                if (status === 404) {
+                    alert('검색 결과가 없습니다.');
                     return;
                 }
                 for (let res of restaurants) {
