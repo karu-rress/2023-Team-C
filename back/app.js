@@ -22,6 +22,14 @@ const PORT = 8080;
 
 let connPool;
 
+// Enable CORS for all routes
+app.use((_, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
 // Run server
 app.listen(PORT, async () => {
     connPool = await poolPromise;

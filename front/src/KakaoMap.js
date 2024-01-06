@@ -13,7 +13,7 @@ import './KakaoMap.css';
 
 
 const kakao_map = window.kakao.maps;
-
+const api_address = 'http://20.205.239.240:8080';
 /**
  * 
  * @param {kakao_map.Map} map 
@@ -63,9 +63,21 @@ function AddMarker(map, name, signature, phone, latlng, time = null) {
     window.closeOverlay = () => overlay.setMap(null);
 }
 
+async function fetchAsync() {
+    try {
+        const response = await fetch(api_address + '/getall');
+        alert(response.status);
+        const result = await response.json();
+        alert(result);
+    }
+    catch (err) {
+        alert('Error! ' + err);
+    }
+}
+
 function KakaoMap() {
-    const [selectedCategory, setSelectedCategory] = useState('');
     const [searchResult, setSearchResult] = useState(null);
+    // const [data, setData] = useState(null);
 
     // 처음 지도가 표시될 때의 위치
     //주소
@@ -85,9 +97,11 @@ function KakaoMap() {
         };
         const map = new kakao_map.Map(container, options);
 
-
-        // 여기에서 REST API 이용, 전체 데이터 받아오기
-        // TO DO
+        const response = fetch('http://20.205.239.240:8080/getall')
+            .then(res => res)
+            .catch(res => alert('error'));
+        alert(response.status);
+        // fetchAsync().then();
 
         // 가게 핀 추가 (for ~ of 사용 필요)
         AddMarker(map, "맛있는 집", "음식점", "02-1234-5678", 
