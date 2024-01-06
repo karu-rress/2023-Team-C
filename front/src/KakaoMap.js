@@ -5,35 +5,39 @@ function KakaoMap() {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [searchResult, setSearchResult] = useState(null);
 
+    // 처음 지도가 표시될 때의 위치
+    const initPos = { lat: 37.5051, lng: 126.9571 };
+
     useEffect(() => {
         if (window.kakao) {
           const container = document.getElementById('kakaomap');
           const options = {
-            center: new window.kakao.maps.LatLng(37.5051, 126.9571),
-            level: 3
+            center: new window.kakao.maps.LatLng(initPos.lat, initPos.lng),
+            level: 4
           };
           const map = new window.kakao.maps.Map(container, options);
     
           const positions = [
             {
-              content: '<div class="wrap">' +
-              '    <div class="info">' +
-              '        <div class="title">' +
-              '            미니자이언트' +
-              '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' +
-              '        </div>' +
-              '        <div class="body">' +
-              '            <div class="img">' +
-              '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="53" height="50">' +
-              '           </div>' +
-              '            <div class="desc">' +
-              '                <div class="ellipsis">흑석로 81-6 1층</div>' +
-              '                <div class="jibun ellipsis">대표메뉴</div>' +
-              '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
-              '            </div>' +
-              '        </div>' +
-              '    </div>' +
-              '</div>',
+              content: 
+
+
+              `<div class="wrap">
+                <div class="info">
+                  <div class="title">
+                    미니자이언트
+                    <div class="close" onclick="closeOverlay()" title="닫기"></div>
+                  </div>
+                  <div class="body">
+                    <div class="desc">
+                      <div class="ellipsis">흑석로 81-6 1층</div>
+                      <div class="jibun ellipsis">맛있는 집</div>
+                      <div class="phone">02-820-6734</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `,
               latlng: new window.kakao.maps.LatLng(37.5072, 126.9586)
             },
           ];
