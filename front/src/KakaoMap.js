@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
 function KakaoMap() {
     useEffect(() => {
         // Kakao 객체가 사용 가능한지 확인합니다.
         if (window.kakao) {
-          let container = document.getElementById('map');
-          let options = {
+          const container = document.getElementById('kakaomap');
+          const options = {
             center: new window.kakao.maps.LatLng(37.5051, 126.9571),
             level: 3
           };
-          let map = new window.kakao.maps.Map(container, options);
+          const map = new window.kakao.maps.Map(container, options);
     
-          let positions = [
+          const positions = [
             {
               content: '<div class="marker-content">미니자이언트</div>',
               latlng: new window.kakao.maps.LatLng(37.5072, 126.9586)
@@ -60,7 +60,7 @@ function KakaoMap() {
       }, []);
 
     return (
-        <div id="kakaomap" style={{ width: '100%', height: '1200px' }} />
+        <div id="kakaomap" />
     );
 }
 
