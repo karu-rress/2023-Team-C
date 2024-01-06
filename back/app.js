@@ -48,7 +48,7 @@ app.get('/api/restaurants/:name', async (req, res) => {
 
     if (DEBUG) {
         try {
-            const result = await connPool.request().query(`SELECT * FROM Restaurants WHERE name = '${name}'`);
+            const result = await connPool.request().query(`SELECT * FROM Restaurants WHERE name = N'${name}'`);
             res.send(result.recordset);
         } 
         catch {
