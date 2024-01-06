@@ -8,13 +8,24 @@
  * 
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import KakaoMap from './KakaoMap';
+import { SearchBox, TitleBar } from './UI';
+import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const [searchResult, setSearchResult] = useState(null);
+
+  const handleSearch = (searchTerm) => {
+    alert('검색어:' + searchTerm);
+    setSearchResult(`검색 결과: ${searchTerm}`);
+  };
+
   return (
     <div>
+      <TitleBar/>
+      <SearchBox onSearch={handleSearch}/>
       <KakaoMap/>
     </div>
   );
