@@ -1,0 +1,40 @@
+#titlebar {
+    display: flex;
+    width: 100vw;
+    height: 60px;
+    background-color: deepskyblue;
+    padding-left: 20px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#titlebar label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    font-size: 30px;
+}
+
+#searchBox {
+    display: flex;
+    width: 100vw;
+    height: 50px;
+    background-color: deepskyblue;
+    padding: 5px 5px 10px 5px;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#searchBox input {
+    font-size: 18px;
+    width: 75vw;
+    border-color: rgb(31, 74, 109);
+    border-radius: 10px;
+}
+
+#searchBox button {
+    font-size: 18px;
+    width: 13vw;
+    border-color: rgb(31, 74, 109);
+    border-radius: 10px;
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DropdownMenu from './DropdownMenu';
 import SearchBox from './SearchBox';
-import logo from './logo.svg';
+
 import './App.css'
 
 function App() {
