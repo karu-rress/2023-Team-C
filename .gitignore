@@ -1,0 +1,5 @@
+back/COMP/
+.env
+node_modules
+api_key.js
+index.html

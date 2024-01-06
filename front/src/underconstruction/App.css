@@ -1,0 +1,134 @@
+.App {
+    text-align: center;
+  }
+  
+  
+  
+  
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .wrap {
+    position: absolute;
+    left: 0;
+    bottom: 40px;
+    width: 200px;  /* 칸 크기 조정 */
+    height: 100px;  /* 칸 크기 조정 */
+    margin-left: -100px;  /* 칸 크기 조정 */
+    text-align: left;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+    line-height: 1.5;
+  }
+  
+  .wrap .info {
+    width: 198px;  /* 칸 크기 조정 */
+    height: 98px;  /* 칸 크기 조정 */
+    border-radius: 5px;
+    border-bottom: 2px solid #ccc;
+    border-right: 1px solid #ccc;
+    overflow: hidden;
+    background: #fff;
+  }
+  
+  .info .title {
+    padding: 5px 0 0 10px;
+    height: 20px;  /* 칸 크기 조정 */
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;  /* 칸 크기 조정 */
+    font-weight: bold;
+  }
+  
+  .info .close {
+    position: absolute;
+    top: 5px;  /* 칸 크기 조정 */
+    right: 5px;  /* 칸 크기 조정 */
+    color: #888;
+    width: 17px;
+    height: 17px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+  }
+  
+  .info .body {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .info .desc {
+    position: relative;
+    margin: 8px 0 0 60px;  /* 칸 크기 조정 */
+    height: 50px;  /* 칸 크기 조정 */
+  }
+  
+  .desc .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .desc .jibun {
+    font-size: 10px;  /* 칸 크기 조정 */
+    color: #888;
+    margin-top: -2px;
+  }
+  
+  .info .img {
+    position: absolute;
+    top: 3px;  /* 칸 크기 조정 */
+    left: 3px;  /* 칸 크기 조정 */
+    width: 53px;  /* 칸 크기 조정 */
+    height: 51px;  /* 칸 크기 조정 */
+    border: 1px solid #ddd;
+    color: #888;
+    overflow: hidden;
+  }
+  
+  .info:after {
+    content: '';
+    position: absolute;
+    margin-left: -6px;  /* 칸 크기 조정 */
+    left: 50%;
+    bottom: 0;
+    width: 11px;  /* 칸 크기 조정 */
+    height: 6px;  /* 칸 크기 조정 */
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+  }
+  
+  .info .link {
+    color: #5085BB;
+  }
