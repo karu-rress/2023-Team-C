@@ -18,7 +18,7 @@ const { poolPromise } = require('./config/server');
 
 // Server and Port settings
 const app = express();
-const PORT = 80;
+const PORT = 8080;
 
 let connPool;
 
