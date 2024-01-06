@@ -6,6 +6,7 @@ function KakaoMap() {
     const [searchResult, setSearchResult] = useState(null);
 
     // 처음 지도가 표시될 때의 위치
+    //주소
     const initPos = { lat: 37.5051, lng: 126.9571 };
 
     useEffect(() => {
