@@ -95,6 +95,9 @@ function KakaoMap() {
 
         AddMarker(map, "맛집","돈가스", "010-1111-1111",
             new kakao_map.LatLng(37.5073, 126.9597));    
+
+        AddMarker(map, "라멘집","라면", "0507-9999-8888",
+            new kakao_map.LatLng(37.5074, 126.9601));    
     }, []);
 
     return (
