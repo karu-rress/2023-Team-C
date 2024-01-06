@@ -15,8 +15,11 @@ import './KakaoMap.css';
 const kakao_map = window.kakao.maps;
 const api_address = 'http://20.205.239.240:8080';
 
+// 처음 지도가 표시될 때의 위치
+const initPos = new kakao_map.LatLng(37.5051, 126.9571);
 
 let index = 0
+
 /**
  * 마커를 추가하는 함수
  * @param {kakao_map.Map} map 
@@ -80,12 +83,12 @@ function AddMarker(map, name, signature, phone, latlng, time = null) {
 /**
  * path에 해당하는 데이터를 GET 하여 반환하는 함수
  * @param {string} path TastyNav API 경로
- * @returns 파싱한 object
+ * @returns status code 및 파싱한 object
  */
 async function fetchAsync(path) {
     try {
-        const response = await fetch(api_address + '/getall');
-        return await response.json();
+        const response = await fetch(api_address + path);
+        return [response.status, await response.json()];
     }
     catch (err) {
         alert('에러가 발생했습니다.\n' + err);
@@ -93,9 +96,6 @@ async function fetchAsync(path) {
 }
 
 function KakaoMap({ search }) {
-    // 처음 지도가 표시될 때의 위치
-    const initPos = { lat: 37.5051, lng: 126.9571 };
-
     useEffect(() => {
         if (!window.kakao) {
             alert('카카오맵 API 오류입니다.');
@@ -105,13 +105,18 @@ function KakaoMap({ search }) {
         // 카카오맵 API 기본 설정
         const container = document.getElementById('kakaomap');
         const options = {
-            center: new kakao_map.LatLng(initPos.lat, initPos.lng),
+            center: initPos,
             level: 4
         };
         const map = new kakao_map.Map(container, options);
 
-        if (search != null) {
-            fetchAsync('/search/' + search).then(restaurants => {
+        if (search) {
+            fetchAsync('/search/' + search).then(([status, restaurants]) => {
+                alert('status: ' + status)
+                if (status !== 200) {
+                    alert('Not found');
+                    return;
+                }
                 for (let res of restaurants) {
                 AddMarker(map, res.name, res.signature, res.phone,
                     new kakao_map.LatLng(res.latitude, res.longitude),
@@ -126,7 +131,7 @@ function KakaoMap({ search }) {
         }
         else {
             // 전체 맛집 목록을 순회한 후, 하나씩 마커를 생성
-            fetchAsync('/getall').then(restaurants => {
+            fetchAsync('/getall').then(([_, restaurants]) => {
                 for (let res of restaurants) {
                 AddMarker(map, res.name, res.signature, res.phone,
                     new kakao_map.LatLng(res.latitude, res.longitude),

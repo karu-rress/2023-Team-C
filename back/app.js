@@ -71,10 +71,13 @@ app.get('/restaurant/:name', async (req, res) => {
         const result = await connPool.request()
             .input('name', sql.NVarChar, name)
             .query('SELECT * FROM Restaurants WHERE name = @name;'); // prevent SQL injection
-        res.send(result.recordset);
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('Not found.');
+        res.status(500).send('DB Error');
     }
 });
 
@@ -85,10 +88,13 @@ app.get('/search/:query', async (req, res) => {
         const result = await connPool.request()
             .input('query', sql.NVarChar, `%${query}%`)
             .query('SELECT * FROM Restaurants WHERE name LIKE @query');
-        res.send(result.recordset);
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('No results found.');
+        res.status(500).send('DB Error');
     }
 });
 
@@ -100,10 +106,13 @@ app.get('/category/:name', async (req, res) => {
         const result = await connPool.request()
             .input('name', sql.NVarChar, name)
             .query('SELECT * FROM Restaurants WHERE category = @name;'); // prevent SQL injection
-        res.send(result.recordset);
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('Not found.');
+        res.status(500).send('DB Error');
     }
 });
 
@@ -113,10 +122,13 @@ app.get('/allowone', async (req, res) => {
         const result = await connPool.request()
             .input('name', sql.NVarChar, name)
             .query('SELECT * FROM Restaurants WHERE allowOne = 1;');
-        res.send(result.recordset);
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('Not found.');
+        res.status(500).send('DB Error');
     }
 });
 
@@ -126,9 +138,12 @@ app.get('/allowmulti', async (req, res) => {
         const result = await connPool.request()
             .input('name', sql.NVarChar, name)
             .query('SELECT * FROM Restaurants WHERE allowMulti = 1;');
-        res.send(result.recordset);
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
     } 
     catch (err) {
-        res.status(404).send('Not found.');
+        res.status(500).send('DB Error');
     }
 });
