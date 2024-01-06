@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
+import KakaoMap from './KakaoMap';
 import './App.css';
 
 function App() {
+
   useEffect(() => {
     // Kakao 객체가 사용 가능한지 확인합니다.
     if (window.kakao) {
@@ -60,7 +61,16 @@ function App() {
     }
   }, []);
 
-  return <div id="map" style={{ width: '100%', height: '1200px' }} />;
+  return <div id="map" style={{ width: '100vw', height: '100vh' }} />;
 }
 
+
+  /*
+  return (
+    <div>
+      <KakaoMap/>
+    </div>
+  );
+}
+*/
 export default App;
