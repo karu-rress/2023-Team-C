@@ -8,6 +8,3 @@ back
 - npm install mssql
 - npm install express
 - npm install dotenv
-
-front
-- pwa modules needed
