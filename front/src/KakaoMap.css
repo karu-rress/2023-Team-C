@@ -57,13 +57,13 @@
     height: 50px;  /* 칸 크기 조정 */
   }
   
-  .desc .ellipsis {
+  .desc .signature {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   
-  .desc .jibun {
+  .desc .opened {
     font-size: 10px;  /* 칸 크기 조정 */
     color: #888;
     margin-top: -2px;
