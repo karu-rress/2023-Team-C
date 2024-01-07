@@ -13,6 +13,7 @@
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
+const cors = require('cors');
 const { sql, poolPromise } = require('./config/server');
 const { pool } = require('mssql');
 
@@ -23,6 +24,7 @@ const HTTPS_PORT = 8443;
 
 let connPool;
  
+app.use(cors({ origin: ['http://tastynav.kro.kr', 'https://tastynav.kro.kr'] }));
 // Enable CORS for all routes
 app.use((_, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -35,7 +37,7 @@ app.use((_, res, next) => {
 app.listen(PORT, async () => {
     connPool = await poolPromise;
     console.log('Connected to TastyNav database.');
-    console.log(`Listening to port ${PORT}...`);
+    console.log(`Listening to port ${PORT} via HTTP...`);
 })
 
 const httpsOptions = {
@@ -46,6 +48,7 @@ const server = https.createServer(httpsOptions, app);
 server.listen(HTTPS_PORT, async () => {
     connPool = await poolPromise;
     console.log('Connected to TastyNav database.');
+    console.log(`Listening to port ${HTTPS_PORT} via HTTPS...`);
 });
 
 
