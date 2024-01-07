@@ -8,17 +8,18 @@
  * 
  */
 
-// DEBUG PARAMETER
-const DEBUG = true;
-
 
 // Import required modules
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const { sql, poolPromise } = require('./config/server');
+const { pool } = require('mssql');
 
 // Server and Port settings
 const app = express();
 const PORT = 8080;
+const HTTPS_PORT = 8443;
 
 let connPool;
  
@@ -36,6 +37,23 @@ app.listen(PORT, async () => {
     console.log('Connected to TastyNav database.');
     console.log(`Listening to port ${PORT}...`);
 })
+
+const httpsOptions = {
+    pfx: fs.readFileSync('../certificate.pfx')
+  };
+
+const server = https.createServer(httpsOptions, app);
+server.use((_, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+})
+server.listen(HTTPS_PORT, async () => {
+    connPool = await poolPromise;
+    console.log('Connected to TastyNav database.');
+});
+
 
 // Main page
 app.get('/', async (_, res) => {
