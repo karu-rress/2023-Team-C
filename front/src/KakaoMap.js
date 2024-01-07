@@ -30,17 +30,32 @@ let index = 0
  * @param {*} time
  */
 function AddMarker(map, name, signature, phone, latlng, time = null) {
-    const current_time = new Date(); // for now
-    const [hour, min] = [current_time.getHours(), current_time.getMinutes()];
+    const current_time = new Date(); // 현재 시간
+    const hour = current_time.getHours();
+    const min = current_time.getMinutes();
 
-    let isOpened;
-    // TODO: 프론트 => 현재 시간을 바탕으로, 가게가 열렸는지 혹은 닫혔는지
-    // 결정하여 isOpened에 true 혹은 false를 대입해주세요.
+    let isOpened = false;
+
+    if (time && time.open && time.close) {
+        const open_hours = parseInt(new Date(time.open).getUTCHours(), 10);
+        const open_minutes = parseInt(new Date(time.open).getUTCMinutes(), 10);
+        const close_hours = parseInt(new Date(time.close).getUTCHours(), 10);
+        const close_minutes = parseInt(new Date(time.close).getUTCMinutes(), 10);
+
+        // 현재 시간이 open과 close 사이에 있을 때
+        if (
+            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
+            (hour < close_hours || (hour === close_hours && min < close_minutes))
+        ) {
+            isOpened = true;
+        }
+    }
+        console.log(`현재 시간: ${hour}시 ${min}분`);   
+   
 
 
 
-
-
+    
 
     // 맛집 표시 마커
     const marker = new window.kakao.maps.Marker({
