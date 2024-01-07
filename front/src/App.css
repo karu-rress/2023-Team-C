@@ -2,9 +2,5 @@
   text-align: center;
 }
 
- div {
-  height: 90vh;
-}
-
 @import './KakaoMap.css';
 @import './UI.css';
