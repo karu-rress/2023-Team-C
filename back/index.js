@@ -24,7 +24,7 @@ const HTTPS_PORT = 8443;
 
 let connPool;
  
-app.use(cors());
+app.use(cors({ origin: ['http://tastynav.kro.kr', 'https://tastynav.kro.kr'] }));
 // Enable CORS for all routes
 app.use((_, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
