@@ -43,12 +43,6 @@ const httpsOptions = {
   };
 
 const server = https.createServer(httpsOptions, app);
-server.use((_, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-})
 server.listen(HTTPS_PORT, async () => {
     connPool = await poolPromise;
     console.log('Connected to TastyNav database.');
