@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
-const api_address = '/api';
+const api_address = 'http://tastynav.kro.kr:8080';
 
 // 처음 지도가 표시될 때의 위치
 const initPos = new kakao_map.LatLng(37.5051, 126.9571);
@@ -113,6 +113,7 @@ function addMarker(map, name, signature, phone, latlng, time) {
  */
 async function fetchAsync(path) {
     try {
+        alert(api_address + path);
         const response = await fetch(api_address + path, {referrerPolicy: "unsafe-url"});
         if (response.status >= 400)
             return [response.status, null];
