@@ -24,7 +24,7 @@
     "workbox-streams": "^6.6.0"
   },
   "scripts": {
-    "start": "set PORT=443 && set HTTPS=true && set SSL_CRT_FILE=../cert.pem && set SSL_KEY_FILE=private.key && react-scripts start",
+    "start": "set HTTPS=true && set SSL_CRT_FILE=../cert.pem && set SSL_KEY_FILE=private.key && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
