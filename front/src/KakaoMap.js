@@ -113,7 +113,6 @@ function addMarker(map, name, signature, phone, latlng, time) {
  */
 async function fetchAsync(path) {
     try {
-        alert(api_address + path);
         const response = await fetch(api_address + path);
         if (response.status >= 400)
             return [response.status, null];
