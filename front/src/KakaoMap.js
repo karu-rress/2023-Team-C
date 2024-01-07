@@ -103,7 +103,8 @@ function KakaoMap({ search }) {
             alert('카카오맵 API 오류입니다.');
             return;
         }
-
+        index = 0;
+        
         // 카카오맵 API 기본 설정
         const container = document.getElementById('kakaomap');
         const options = {
