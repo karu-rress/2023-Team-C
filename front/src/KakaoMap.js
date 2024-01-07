@@ -11,7 +11,6 @@
 import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
-
 const kakao_map = window.kakao.maps;
 const api_address = 'http://20.205.239.240:8080';
 
@@ -21,41 +20,52 @@ const initPos = new kakao_map.LatLng(37.5051, 126.9571);
 let index = 0
 
 /**
+ * addMarker의 wrapper 함수
+ * @param {kakao_map.Map} map
+ * @param {object} restaurants 
+ */
+function addMarkersFromRestaurants(map, restaurants) {
+    for (let res of restaurants) {
+        addMarker(map, res.name, res.signature, res.phone,
+            new kakao_map.LatLng(res.latitude, res.longitude),
+            {
+                open: Date.parse(res.openTime),
+                close: Date.parse(res.closeTime),
+                breakStart: Date.parse(res.breakStart),
+                breakEnd: Date.parse(res.breakEnd),
+            });
+    }
+}
+
+/**
  * 마커를 추가하는 함수
  * @param {kakao_map.Map} map 
  * @param {string} name 
  * @param {string} signature 
  * @param {string} phone 
  * @param {kakao_map.LatLng} latlng
- * @param {*} time
+ * @param {{open: Date, close: Date, breakStart: Date, breakEnd: Date}} time
  */
-function AddMarker(map, name, signature, phone, latlng, time = null) {
-    const current_time = new Date(); // 현재 시간
-    const hour = current_time.getHours();
-    const min = current_time.getMinutes();
-
+function addMarker(map, name, signature, phone, latlng, time) {
+    const current_time = new Date().setFullYear(1970, 0, 1); // 현재 시간
     let isOpened = false;
 
-    if (time && time.open && time.close) {
-        const open_hours = parseInt(new Date(time.open).getUTCHours(), 10);
-        const open_minutes = parseInt(new Date(time.open).getUTCMinutes(), 10);
-        const close_hours = parseInt(new Date(time.close).getUTCHours(), 10);
-        const close_minutes = parseInt(new Date(time.close).getUTCMinutes(), 10);
-
-        // 현재 시간이 open과 close 사이에 있을 때
-        if (
-            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
-            (hour < close_hours || (hour === close_hours && min < close_minutes))
-        ) {
-            isOpened = true;
-        }
+    if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
+        isOpened = true;
     }
-        console.log(`현재 시간: ${hour}시 ${min}분`);   
-   
+    else if (!time.breakStart) { // 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
+        isOpened = (current_time >= time.open && current_time <= time.close);
+    }
+    else { // TODO: 전체 운영 시간 데이터와 휴식 시간 데이터가 있는 경우,
+           // current_time ∈ ([time.open, time.breakStart] ∪ [time.breakEnd, time.close])
+           // 이어야 함. 맞으면 true, 아니면 false.
 
 
 
-    
+
+
+
+    }
 
     // 맛집 표시 마커
     const marker = new window.kakao.maps.Marker({
@@ -98,7 +108,7 @@ function AddMarker(map, name, signature, phone, latlng, time = null) {
 /**
  * path에 해당하는 데이터를 GET 하여 반환하는 함수
  * @param {string} path TastyNav API 경로
- * @returns status code 및 파싱한 object
+ * @returns {[number, null | object]} status code 및 파싱한 object
  */
 async function fetchAsync(path) {
     try {
@@ -119,7 +129,7 @@ function KakaoMap({ search }) {
             return;
         }
         index = 0;
-        
+
         // 카카오맵 API 기본 설정
         const container = document.getElementById('kakaomap');
         const options = {
@@ -132,36 +142,17 @@ function KakaoMap({ search }) {
             fetchAsync('/search/' + search).then(([status, restaurants]) => {
                 if (status === 404) {
                     alert('검색 결과가 없습니다.');
-                    return;
+                    return; // 검색 결과 없으면 마커 생성 중단
                 }
-                for (let res of restaurants) {
-                AddMarker(map, res.name, res.signature, res.phone,
-                    new kakao_map.LatLng(res.latitude, res.longitude),
-                    {
-                        open: res.openTime,
-                        close: res.closeTime,
-                        breakStart: res.breakStart,
-                        breakEnd: res.breakEnd,
-                    });
-                }
+                addMarkersFromRestaurants(map, restaurants);
             });
         }
         else {
-            // 전체 맛집 목록을 순회한 후, 하나씩 마커를 생성
-            fetchAsync('/getall').then(([_, restaurants]) => {
-                for (let res of restaurants) {
-                AddMarker(map, res.name, res.signature, res.phone,
-                    new kakao_map.LatLng(res.latitude, res.longitude),
-                    {
-                        open: res.openTime,
-                        close: res.closeTime,
-                        breakStart: res.breakStart,
-                        breakEnd: res.breakEnd,
-                    });
-                }
-            });
+            // 전체 맛집 목록을 순회한 후, 마커들을 생성
+            fetchAsync('/getall').then(([_, restaurants]) => 
+                addMarkersFromRestaurants(map, restaurants));
         }
-    }, [search]);
+    }, [search]); // search가 갱신될 때마다 마커 다시 그리기
 
     return (
         <div id="kakaomap" />
