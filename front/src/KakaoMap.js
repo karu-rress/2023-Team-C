@@ -112,7 +112,7 @@ function addMarker(map, name, signature, phone, latlng, time) {
  */
 async function fetchAsync(path) {
     try {
-        const response = await fetch(api_address + path);
+        const response = await fetch(api_address + path, {referrerPolicy: "unsafe-url"});
         if (response.status >= 400)
             return [response.status, null];
         return [response.status, await response.json()];
