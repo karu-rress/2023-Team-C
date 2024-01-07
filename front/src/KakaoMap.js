@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
-const api_address = 'http://20.205.239.240:8080';
+const api_address = 'http://localhost:8080';
 
 // 처음 지도가 표시될 때의 위치
 const initPos = new kakao_map.LatLng(37.5051, 126.9571);
