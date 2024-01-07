@@ -11,6 +11,7 @@
 import React, { useState } from 'react';
 import KakaoMap from './KakaoMap';
 import { SearchBox, TitleBar } from './UI';
+import Popup from './Popup';
 import logo from './logo.svg';
 import './App.css';
 
@@ -24,6 +25,7 @@ function App() {
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
       <KakaoMap search={searchTerm}/>
+      <Popup/>
     </div>
   );
 }
