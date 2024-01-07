@@ -50,6 +50,7 @@ app.get('/', async (_, res) => {
                 <li>/category/{name} : get list about category</li>
                 <li>/allowone : get list that allow one person</li>
                 <li>/allowmulti : get list that allow more than 4</li>
+                <li>/menu/{restaurant} : TODO</li>
               </ul><br>
               <h2>Warning</h2>
               USE <b>ONLY <mark>GET</mark> METHOD</b> HERE!!!`);
@@ -138,6 +139,28 @@ app.get('/allowmulti', async (req, res) => {
         const result = await connPool.request()
             .input('name', sql.NVarChar, name)
             .query('SELECT * FROM Restaurants WHERE allowMulti = 1;');
+        if (result.recordset.length === 0)
+            res.status(404).send('No results found.');
+        else
+            res.send(result.recordset);
+    } 
+    catch (err) {
+        res.status(500).send('DB Error');
+    }
+});
+
+
+
+
+
+
+// If requested with category
+app.get('/menu/:restaurant', async (req, res) => {
+    try {
+        let { restaurant } = req.params;
+        const result = await connPool.request()
+            .input('name', sql.NVarChar, name)
+            .query('');
         if (result.recordset.length === 0)
             res.status(404).send('No results found.');
         else
