@@ -19,7 +19,6 @@ const { pool } = require('mssql');
 
 // Server and Port settings
 const app = express();
-const PORT = 8080;
 const HTTPS_PORT = 8443;
 
 let connPool;
@@ -34,12 +33,6 @@ app.use((_, res, next) => {
 });
 
 // Run server
-app.listen(PORT, async () => {
-    connPool = await poolPromise;
-    console.log('Connected to TastyNav database.');
-    console.log(`Listening to port ${PORT} via HTTP...`);
-})
-
 const httpsOptions = {
     pfx: fs.readFileSync('../certificate.pfx')
   };
