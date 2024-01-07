@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
-const api_address = 'http://tastynav.kro.kr:8080';
+const api_address = '/api';
 
 // 처음 지도가 표시될 때의 위치
 const initPos = new kakao_map.LatLng(37.5051, 126.9571);
@@ -48,6 +48,7 @@ function addMarkersFromRestaurants(map, restaurants) {
  */
 function addMarker(map, name, signature, phone, latlng, time) {
     const current_time = new Date().setFullYear(1970, 0, 1); // 현재 시간
+
     let isOpened = false;
 
     if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주

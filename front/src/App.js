@@ -17,8 +17,7 @@ import './App.css';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearch = (st) => { setSearchTerm(st); };
+  const handleSearch = st => setSearchTerm(st);
 
   return (
     <div>
