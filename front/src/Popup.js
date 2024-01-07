@@ -13,7 +13,7 @@ import './Popup.css';
 
 function Popup() {
     return (
-
+        null
     );
 }
 
