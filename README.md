@@ -10,4 +10,10 @@ back
 - npm install dotenv
 
 Running on
-http://20.205.239.240:8080/
+http://tastynav.kro.kr:8080
+
+
+front
+(React with PWA)
+Running on
+https://tastynav.kro.kr
