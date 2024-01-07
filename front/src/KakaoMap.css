@@ -1,6 +1,6 @@
 #kakaomap {
     width: 100vw;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 125px); /* Title Bar의 padding도 고려 */
 }
 
 .wrap {
