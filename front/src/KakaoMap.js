@@ -46,28 +46,45 @@ function addMarkersFromRestaurants(map, restaurants) {
  * @param {kakao_map.LatLng} latlng
  * @param {{open: Date, close: Date, breakStart: Date, breakEnd: Date}} time
  */
-function addMarker(map, name, signature, phone, latlng, time) {
-    const current_time = new Date().setFullYear(1970, 0, 1); // 현재 시간
+function addMarker(map, name, signature, phone, latlng, time = null) {
+    const current_time = new Date()// 현재 시간
+    const [hour,min] = [current_time.getHours(),current_time.getMinutes()]
 
-    let isOpened = false;
-
-    if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
-        isOpened = true;
+    let isOpened = true
+    if (time && time.open && time.close && time.breakStart && time.breakEnd) {
+        const open_hours = parseInt(new Date(time.open).getUTCHours(), 10);
+        const open_minutes = parseInt(new Date(time.open).getUTCMinutes(), 10);
+        const close_hours = parseInt(new Date(time.close).getUTCHours(), 10);
+        const close_minutes = parseInt(new Date(time.close).getUTCMinutes(), 10);
+        const breakStart_hours = parseInt(new Date(time.breakStart).getUTCHours(), 10);
+        const breakStart_minutes = parseInt(new Date(time.breakStart).getUTCMinutes(), 10);
+        const breakEnd_hours = parseInt(new Date(time.breakEnd).getUTCHours(), 10);
+        const breakEnd_minutes = parseInt(new Date(time.breakEnd).getUTCMinutes(), 10);
+    
+        if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
+            isOpened = true;
+        }
+        else if  (!time.breakStart) {// 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
+            isOpened= 
+            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
+            (hour < close_hours || (hour === close_hours && min < close_minutes));
+            
+        }
+        else {isOpened=
+            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
+            (hour < breakStart_hours || (hour === breakStart_hours && min < breakStart_minutes)) &&
+            (hour > breakEnd_hours ||  (hour === breakEnd_hours && min >= breakEnd_minutes)) &&
+            (hour < close_hours || (hour === close_hours && min < close_minutes)); 
+        
+        console.log(`현재 시간: ${hour}시 ${min}분`);
+        console.log(`오픈시간: ${open_hours}시 ${open_minutes}분`);
+        console.log(`Is the store open? ${isOpened}`);
+        console.log(`Is the store open? ${hour > open_hours || (hour === open_hours && min >= open_minutes) &&
+         (hour < breakStart_hours || (hour === breakStart_hours && min < breakStart_minutes)) &&
+         (hour > breakEnd_hours ||  (hour === breakEnd_hours && min >= breakEnd_minutes)) &&
+         (hour < close_hours || (hour === close_hours && min < close_minutes))}`);
     }
-    else if (!time.breakStart) { // 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
-        isOpened = (current_time >= time.open && current_time <= time.close);
-    }
-    else { // TODO: 전체 운영 시간 데이터와 휴식 시간 데이터가 있는 경우,
-           // current_time ∈ ([time.open, time.breakStart] ∪ [time.breakEnd, time.close])
-           // 이어야 함. 맞으면 true, 아니면 false.
-
-
-
-
-
-
-    }
-
+}
     // 맛집 표시 마커
     const marker = new window.kakao.maps.Marker({
         map: map,
