@@ -194,3 +194,42 @@ app.get('/menu/:restaurant', async (req, res) => {
         res.status(500).send('DB Error');
     }
 });
+
+//distance calculation
+app.get('/closeGate/:name', async (req, res) => {
+    try {
+        let { name } = req.params;
+
+        const restaurantInfo = await connPool.request()
+            .input('name', sql.NVarChar, name)
+            .query('SELECT latitude, longitude FROM Restaurants WHERE name = @name;');
+
+        if (!restaurantInfo.recordset.length) {
+            res.status(404).send('Restaurant not found.');
+            return;
+        }
+
+        const restaurantLocation = {
+            latitude: restaurantInfo.recordset.latitude,
+            longitude: restaurantInfo.recordset.longitude
+        };
+
+        const mainGate = { latitude: 37.5068276, longitude: 126.9584776 };
+        const backGate = { latitude: 37.5047735, longitude: 126.9537650 };
+
+        const distanceToMainGate = geolib.getDistance(restaurantLocation, mainGate);
+        const distanceToBackGate = geolib.getDistance(restaurantLocation, backGate);
+
+        let closeLocation;
+        if (distanceToMainGate < distanceToBackGate) {
+            closeLocation = 'main gate';
+        } else {
+            closeLocation = 'back gate';
+        }
+
+        res.send(closeLocation);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error');
+    }
+});
