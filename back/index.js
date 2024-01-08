@@ -175,3 +175,22 @@ app.get('/menu/:restaurant', async (req, res) => {
         res.status(500).send('DB Error');
     }
 });
+
+// If requested with restaurant name to get menu
+app.get('/menu/:restaurant', async (req, res) => {
+    try {
+        let { restaurant } = req.params;
+        const result = await connPool.request()
+            .input('restaurant', sql.NVarChar, restaurant)
+            .query('SELECT menu, price FROM Menus WHERE restaurant = @restaurant;');
+        if (result.recordset.length === 0)
+            res.status(404).send('No menu found for the following restaurant.');
+        else {
+            res.send(result.recordset);
+        }
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(500).send('DB Error');
+    }
+});
