@@ -9,10 +9,10 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { BACKEND_API } from './config';
 import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
-const api_address = 'https://tastynav.kro.kr:8443';
 
 // 처음 지도가 표시될 때의 위치
 const initPos = new kakao_map.LatLng(37.5051, 126.9571);
@@ -29,10 +29,10 @@ function addMarkersFromRestaurants(map, restaurants) {
         addMarker(map, res.name, res.signature, res.phone,
             new kakao_map.LatLng(res.latitude, res.longitude),
             {
-                open: Date.parse(res.openTime),
-                close: Date.parse(res.closeTime),
-                breakStart: Date.parse(res.breakStart),
-                breakEnd: Date.parse(res.breakEnd),
+                open: new Date(res.openTime),
+                close: new Date(res.closeTime),
+                breakStart: new Date(res.breakStart),
+                breakEnd: new Date(res.breakEnd),
             });
     }
 }
@@ -47,44 +47,22 @@ function addMarkersFromRestaurants(map, restaurants) {
  * @param {{open: Date, close: Date, breakStart: Date, breakEnd: Date}} time
  */
 function addMarker(map, name, signature, phone, latlng, time = null) {
-    const current_time = new Date()// 현재 시간
-    const [hour,min] = [current_time.getHours(),current_time.getMinutes()]
+    const current_time = new Date();
+    current_time.setFullYear(1970, 0, 1); // 현재 시간
+    current_time.setHours(current_time.getHours() + 9);
+    let isOpened = false;
 
-    let isOpened = true
-    if (time && time.open && time.close && time.breakStart && time.breakEnd) {
-        const open_hours = parseInt(new Date(time.open).getUTCHours(), 10);
-        const open_minutes = parseInt(new Date(time.open).getUTCMinutes(), 10);
-        const close_hours = parseInt(new Date(time.close).getUTCHours(), 10);
-        const close_minutes = parseInt(new Date(time.close).getUTCMinutes(), 10);
-        const breakStart_hours = parseInt(new Date(time.breakStart).getUTCHours(), 10);
-        const breakStart_minutes = parseInt(new Date(time.breakStart).getUTCMinutes(), 10);
-        const breakEnd_hours = parseInt(new Date(time.breakEnd).getUTCHours(), 10);
-        const breakEnd_minutes = parseInt(new Date(time.breakEnd).getUTCMinutes(), 10);
-    
-        if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
-            isOpened = true;
-        }
-        else if  (!time.breakStart) {// 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
-            isOpened= 
-            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
-            (hour < close_hours || (hour === close_hours && min < close_minutes));
-            
-        }
-        else {isOpened=
-            (hour > open_hours || (hour === open_hours && min >= open_minutes)) &&
-            (hour < breakStart_hours || (hour === breakStart_hours && min < breakStart_minutes)) &&
-            (hour > breakEnd_hours ||  (hour === breakEnd_hours && min >= breakEnd_minutes)) &&
-            (hour < close_hours || (hour === close_hours && min < close_minutes)); 
-        
-        console.log(`현재 시간: ${hour}시 ${min}분`);
-        console.log(`오픈시간: ${open_hours}시 ${open_minutes}분`);
-        console.log(`Is the store open? ${isOpened}`);
-        console.log(`Is the store open? ${hour > open_hours || (hour === open_hours && min >= open_minutes) &&
-         (hour < breakStart_hours || (hour === breakStart_hours && min < breakStart_minutes)) &&
-         (hour > breakEnd_hours ||  (hour === breakEnd_hours && min >= breakEnd_minutes)) &&
-         (hour < close_hours || (hour === close_hours && min < close_minutes))}`);
+    if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
+        isOpened = true;
     }
-}
+    else if (!time.breakStart) { // 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
+        isOpened = (current_time >= time.open && current_time <= time.close);
+    }
+    else {
+        isOpened = (current_time >= time.open && current_time <= time.breakStart)
+            || (current_time >= time.breakEnd && current_time <= time.close);
+    }
+
     // 맛집 표시 마커
     const marker = new window.kakao.maps.Marker({
         map: map,
@@ -130,7 +108,7 @@ function addMarker(map, name, signature, phone, latlng, time = null) {
  */
 async function fetchAsync(path) {
     try {
-        const response = await fetch(api_address + path);
+        const response = await fetch(BACKEND_API + path);
         if (response.status >= 400)
             return [response.status, null];
         return [response.status, await response.json()];
