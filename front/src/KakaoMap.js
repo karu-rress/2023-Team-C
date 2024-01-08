@@ -118,7 +118,7 @@ async function fetchAsync(path) {
     }
 }
 
-function KakaoMap({ search }) {
+function KakaoMap({ search, category }) {
     useEffect(() => {
         if (!window.kakao) {
             alert('카카오맵 API 오류입니다.');
@@ -143,12 +143,15 @@ function KakaoMap({ search }) {
                 addMarkersFromRestaurants(map, restaurants);
             });
         }
+        else if (category) {
+            
+        }
         else {
             // 전체 맛집 목록을 순회한 후, 마커들을 생성
             fetchAsync('/getall').then(([_, restaurants]) => 
                 addMarkersFromRestaurants(map, restaurants));
         }
-    }, [search]); // search가 갱신될 때마다 마커 다시 그리기
+    }, [search, category]); // search 또는 category가 갱신될 때마다 마커 다시 그리기
 
     return (
         <div id="kakaomap" />

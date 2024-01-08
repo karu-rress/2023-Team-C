@@ -16,13 +16,14 @@ import './App.css';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [cagegoryTerm, setCategoryTerm] = useState('');
   const handleSearch = st => setSearchTerm(st);
 
   return (
     <div>
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
-      <KakaoMap search={searchTerm}/>
+      <KakaoMap search={searchTerm} category={categoryTerm}/>
       <Popup/>
     </div>
   );
