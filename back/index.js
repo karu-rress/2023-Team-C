@@ -154,11 +154,6 @@ app.get('/allowmulti', async (req, res) => {
     }
 });
 
-
-
-
-
-
 // If requested with category
 app.get('/menu/:restaurant', async (req, res) => {
     try {
@@ -173,5 +168,88 @@ app.get('/menu/:restaurant', async (req, res) => {
     } 
     catch (err) {
         res.status(500).send('DB Error');
+    }
+});
+
+// If requested with restaurant name to get menu
+app.get('/menu/:restaurant', async (req, res) => {
+    try {
+        let { restaurant } = req.params;
+        const result = await connPool.request()
+            .input('restaurant', sql.NVarChar, restaurant)
+            .query('SELECT menu, price FROM Menus WHERE restaurant = @restaurant;');
+        if (result.recordset.length === 0)
+            res.status(404).send('No menu found for the following restaurant.');
+        else {
+            res.send(result.recordset);
+        }
+    } 
+    catch (err) {
+        console.error(err);
+        res.status(500).send('DB Error');
+    }
+});
+
+//distance calculation
+app.get('/closeGate/:name', async (req, res) => {
+    try {
+        const { name } = req.params;
+
+        const restaurantInfo = await connPool.request()
+            .input('name', sql.NVarChar, name)
+            .query('SELECT latitude, longitude FROM Restaurants WHERE name = @name;');
+
+        if (!restaurantInfo.recordset.length) {
+            res.status(404).send('Restaurant not found.');
+            return;
+        }
+
+        const restaurantLocation = {
+            latitude: restaurantInfo.recordset.latitude,
+            longitude: restaurantInfo.recordset.longitude
+        };
+
+        const mainGate = { latitude: 37.5068276, longitude: 126.9584776 };
+        const backGate = { latitude: 37.5047735, longitude: 126.9537650 };
+
+        const distanceToMainGate = geolib.getDistance(restaurantLocation, mainGate);
+        const distanceToBackGate = geolib.getDistance(restaurantLocation, backGate);
+
+        let closeLocation;
+        if (distanceToMainGate < distanceToBackGate) {
+            const result = await connPool.request()
+                .input('m_latitude', sql.Float, mainGate.latitude)
+                .input('m_longitude', sql.Float, mainGate.longitude)
+                .input('b_latitude', sql.Float, backGate.latitude)
+                .input('b_longitude', sql.Float, backGate.longitude)
+                .query('SELECT name FROM Restaurants WHERE ' +
+                    'geolib.getDistance({ latitude: m_latitude, longitude: m_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude }) < ' +
+                    'geolib.getDistance({ latitude: g_latitude, longitude: g_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude })');
+
+        closeRestaurants.push(...result.recordset.map(record => record.name));
+
+        } 
+        else {
+            const result = await connPool.request()
+                .input('m_latitude', sql.Float, mainGate.latitude)
+                .input('m_longitude', sql.Float, mainGate.longitude)
+                .input('b_latitude', sql.Float, backGate.latitude)
+                .input('b_longitude', sql.Float, backGate.longitude)
+                .query('SELECT name FROM Restaurants WHERE ' +
+                    'geolib.getDistance({ latitude: g__latitude, longitude: g__longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude }) < ' +
+                    'geolib.getDistance({ latitude: m_latitude, longitude: m_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude })');
+
+
+        closeRestaurants.push(...result.recordset.map(record => record.name));
+    }
+
+        res.send(closeRestaurants);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error');
     }
 });
