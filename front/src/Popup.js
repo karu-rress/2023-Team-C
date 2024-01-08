@@ -11,10 +11,8 @@
 import React, { useEffect, useState } from 'react';
 import './Popup.css';
 
-function Popup() {
+export default function Popup() {
     return (
         null
     );
 }
-
-export default Popup;

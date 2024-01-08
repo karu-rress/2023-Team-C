@@ -33,10 +33,7 @@ app.use((_, res, next) => {
 });
 
 // Run server
-const httpsOptions = {
-    pfx: fs.readFileSync('../certificate.pfx')
-  };
-
+const httpsOptions = { pfx: fs.readFileSync('../certificate.pfx') };
 const server = https.createServer(httpsOptions, app);
 server.listen(HTTPS_PORT, async () => {
     connPool = await poolPromise;
