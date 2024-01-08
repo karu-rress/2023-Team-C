@@ -144,12 +144,16 @@ function KakaoMap({ search, category }) {
             });
         }
         else if (category) {
-            
+            fetchAsync('/category/' + category).then(([status, restaurants]) => {
+                if (status === 404) {
+                    alert('검색 결과가 없습니다.');
+                    return; // 검색 결과 없으면 마커 생성 중단
+                }
+                addMarkersFromRestaurants(map, restaurants);
+            });
         }
         else {
-            // 전체 맛집 목록을 순회한 후, 마커들을 생성
-            fetchAsync('/getall').then(([_, restaurants]) => 
-                addMarkersFromRestaurants(map, restaurants));
+            
         }
     }, [search, category]); // search 또는 category가 갱신될 때마다 마커 다시 그리기
 
