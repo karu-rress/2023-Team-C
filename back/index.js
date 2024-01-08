@@ -154,11 +154,6 @@ app.get('/allowmulti', async (req, res) => {
     }
 });
 
-
-
-
-
-
 // If requested with category
 app.get('/menu/:restaurant', async (req, res) => {
     try {
@@ -198,7 +193,7 @@ app.get('/menu/:restaurant', async (req, res) => {
 //distance calculation
 app.get('/closeGate/:name', async (req, res) => {
     try {
-        let { name } = req.params;
+        const { name } = req.params;
 
         const restaurantInfo = await connPool.request()
             .input('name', sql.NVarChar, name)
@@ -222,12 +217,37 @@ app.get('/closeGate/:name', async (req, res) => {
 
         let closeLocation;
         if (distanceToMainGate < distanceToBackGate) {
-            closeLocation = 'main gate';
-        } else {
-            closeLocation = 'back gate';
-        }
+            const result = await connPool.request()
+                .input('m_latitude', sql.Float, mainGate.latitude)
+                .input('m_longitude', sql.Float, mainGate.longitude)
+                .input('b_latitude', sql.Float, backGate.latitude)
+                .input('b_longitude', sql.Float, backGate.longitude)
+                .query('SELECT name FROM Restaurants WHERE ' +
+                    'geolib.getDistance({ latitude: m_latitude, longitude: m_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude }) < ' +
+                    'geolib.getDistance({ latitude: g_latitude, longitude: g_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude })');
 
-        res.send(closeLocation);
+        closeRestaurants.push(...result.recordset.map(record => record.name));
+
+        } 
+        else {
+            const result = await connPool.request()
+                .input('m_latitude', sql.Float, mainGate.latitude)
+                .input('m_longitude', sql.Float, mainGate.longitude)
+                .input('b_latitude', sql.Float, backGate.latitude)
+                .input('b_longitude', sql.Float, backGate.longitude)
+                .query('SELECT name FROM Restaurants WHERE ' +
+                    'geolib.getDistance({ latitude: g__latitude, longitude: g__longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude }) < ' +
+                    'geolib.getDistance({ latitude: m_latitude, longitude: m_longitude }, ' +
+                    '{ latitude: @latitude, longitude: @longitude })');
+
+
+        closeRestaurants.push(...result.recordset.map(record => record.name));
+    }
+
+        res.send(closeRestaurants);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error');
