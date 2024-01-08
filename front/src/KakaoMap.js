@@ -29,10 +29,10 @@ function addMarkersFromRestaurants(map, restaurants) {
         addMarker(map, res.name, res.signature, res.phone,
             new kakao_map.LatLng(res.latitude, res.longitude),
             {
-                open: new Date(res.openTime),
-                close: new Date(res.closeTime),
-                breakStart: new Date(res.breakStart),
-                breakEnd: new Date(res.breakEnd),
+                open: res.openTime == null ? null : new Date(res.openTime),
+                close: res.closeTime == null ? null : new Date(res.closeTime),
+                breakStart: res.breakStart == null ? null : new Date(res.breakStart),
+                breakEnd: res.breakEnd  == null ? null : new Date(res.breakEnd),
             });
     }
 }
@@ -52,7 +52,7 @@ function addMarker(map, name, signature, phone, latlng, time = null) {
     current_time.setHours(current_time.getHours() + 9);
     let isOpened = false;
 
-    if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
+    if (time == null || !time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
         isOpened = true;
     }
     else if (!time.breakStart) { // 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
