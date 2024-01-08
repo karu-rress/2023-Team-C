@@ -16,7 +16,7 @@ import './App.css';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [cagegoryTerm, setCategoryTerm] = useState('');
+  const [categoryTerm, setCategoryTerm] = useState('');
   const handleSearch = st => setSearchTerm(st);
 
   return (
