@@ -9,10 +9,10 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { BACKEND_API } from './config';
 import './KakaoMap.css';
 
 const kakao_map = window.kakao.maps;
-const api_address = 'https://tastynav.kro.kr:8443';
 
 // 처음 지도가 표시될 때의 위치
 const initPos = new kakao_map.LatLng(37.5051, 126.9571);
@@ -29,10 +29,10 @@ function addMarkersFromRestaurants(map, restaurants) {
         addMarker(map, res.name, res.signature, res.phone,
             new kakao_map.LatLng(res.latitude, res.longitude),
             {
-                open: Date.parse(res.openTime),
-                close: Date.parse(res.closeTime),
-                breakStart: Date.parse(res.breakStart),
-                breakEnd: Date.parse(res.breakEnd),
+                open: new Date(res.openTime),
+                close: new Date(res.closeTime),
+                breakStart: new Date(res.breakStart),
+                breakEnd: new Date(res.breakEnd),
             });
     }
 }
@@ -46,9 +46,10 @@ function addMarkersFromRestaurants(map, restaurants) {
  * @param {kakao_map.LatLng} latlng
  * @param {{open: Date, close: Date, breakStart: Date, breakEnd: Date}} time
  */
-function addMarker(map, name, signature, phone, latlng, time) {
-    const current_time = new Date().setFullYear(1970, 0, 1); // 현재 시간
-
+function addMarker(map, name, signature, phone, latlng, time = null) {
+    const current_time = new Date();
+    current_time.setFullYear(1970, 0, 1); // 현재 시간
+    current_time.setHours(current_time.getHours() + 9);
     let isOpened = false;
 
     if (!time.open) { // 영업시간 데이터가 없는 경우, 항상 영업중인 것으로 간주
@@ -57,15 +58,9 @@ function addMarker(map, name, signature, phone, latlng, time) {
     else if (!time.breakStart) { // 휴식 시간 데이터가 없는 경우, 운영 시간만 확인
         isOpened = (current_time >= time.open && current_time <= time.close);
     }
-    else { // TODO: 전체 운영 시간 데이터와 휴식 시간 데이터가 있는 경우,
-           // current_time ∈ ([time.open, time.breakStart] ∪ [time.breakEnd, time.close])
-           // 이어야 함. 맞으면 true, 아니면 false.
-
-
-
-
-
-
+    else {
+        isOpened = (current_time >= time.open && current_time <= time.breakStart)
+            || (current_time >= time.breakEnd && current_time <= time.close);
     }
 
     // 맛집 표시 마커
@@ -113,7 +108,7 @@ function addMarker(map, name, signature, phone, latlng, time) {
  */
 async function fetchAsync(path) {
     try {
-        const response = await fetch(api_address + path);
+        const response = await fetch(BACKEND_API + path);
         if (response.status >= 400)
             return [response.status, null];
         return [response.status, await response.json()];

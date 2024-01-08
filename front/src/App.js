@@ -8,11 +8,10 @@
  * 
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import KakaoMap from './KakaoMap';
 import { SearchBox, TitleBar } from './UI';
 import Popup from './Popup';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
