@@ -1,13 +1,3 @@
-/**
- * 
- *  KakaoMap.js
- *  All functions related to Kakao Map API
- * 
- *  Created: 2024-01-06
- *  Last modified: -
- * 
- */
-
 import React, { useEffect, useState } from 'react';
 import { BACKEND_API } from './config';
 import './KakaoMap.css';
@@ -90,14 +80,49 @@ function addMarker(map, name, signature, phone, latlng, time = null) {
         position: marker.getPosition()
     })
 
-    // 마커 생성 (토글 가능) 및 오버레이 끄기
+    // + 버튼 클릭시, 추가 설명 오버레이를 보여주는 함수 호출
+    const addButton = document.createElement('div');
+    addButton.className = 'add-description-btn';
+    addButton.onclick = () => showDescription(index, map, marker);
+
+    // .title 클래스를 가진 요소가 있는지 확인 후 추가
+    const titleElement = document.querySelector('.title');
+    if (titleElement) {
+        titleElement.appendChild(addButton);
+    }
+
+    // 나머지 코드는 그대로 유지
     window.kakao.maps.event.addListener(marker, 'click',
         () => overlay.setMap(overlay.getMap() ? null : map));
     overlay.setMap(null);
 
-    // X버튼 클릭시, 오버레이에 해당하는 창만 끄기
     eval(`window.closeOverlay${index} = () => { overlay.setMap(null); }`);
+    eval(`window.showDescription${index} = () => { showDescription(${index}, map, marker); }`);
+
     index++;
+}
+
+function showDescription(index, map, marker,name) {
+    const descriptionOverlay = new window.kakao.maps.CustomOverlay({
+        content: `<div class="expanded-overlay">
+            <div class="info">
+                <div class="title">
+                ${name}
+                <div class="close" onclick="closeDescription${index}()" title="닫기"></div>
+                </div>
+                <div class="body">
+                <div class="desc">
+                    <p>여기에 추가 설명을 넣으세요.</p>
+                </div>
+                </div>
+            </div>
+        </div>`,
+        map: map,
+        position: marker.getPosition()
+    });
+
+    eval(`window.closeDescription${index} = () => { descriptionOverlay.setMap(null); }`);
+    descriptionOverlay.setMap(map);
 }
 
 
