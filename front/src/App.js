@@ -13,6 +13,9 @@ import KakaoMap from './KakaoMap';
 import { SearchBox, TitleBar } from './UI';
 import Popup from './Popup';
 import './App.css';
+import Category from "./Category";
+
+
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +25,8 @@ function App() {
   return (
     <div>
       <TitleBar/>
-      <SearchBox onSearch={handleSearch}/>   
+      <SearchBox onSearch={handleSearch}/>
+      <Category />  
       <KakaoMap search={searchTerm} category={categoryTerm}/>
       <Popup/>
     </div>
