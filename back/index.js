@@ -156,26 +156,6 @@ app.get('/allowmulti', async (req, res) => {
 
 
 
-
-
-
-// If requested with category
-app.get('/menu/:restaurant', async (req, res) => {
-    try {
-        let { restaurant } = req.params;
-        const result = await connPool.request()
-            .input('name', sql.NVarChar, name)
-            .query('');
-        if (result.recordset.length === 0)
-            res.status(404).send('No results found.');
-        else
-            res.send(result.recordset);
-    } 
-    catch (err) {
-        res.status(500).send('DB Error');
-    }
-});
-
 // If requested with restaurant name to get menu
 app.get('/menu/:restaurant', async (req, res) => {
     try {
@@ -195,7 +175,7 @@ app.get('/menu/:restaurant', async (req, res) => {
     }
 });
 
-//distance calculation
+// distance calculation
 app.get('/closeGate/:name', async (req, res) => {
     try {
         let { name } = req.params;
