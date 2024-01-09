@@ -5,13 +5,13 @@ import './KakaoMap.css';
 const kakao_map = window.kakao.maps;
 
 // 처음 지도가 표시될 때의 위치
-const initPos = new kakao_map.LatLng(37.5051, 126.9571);
+const initPos = new window.kakao.maps.LatLng(37.5051, 126.9571);
 
-let index = 0
+let index = 0;
 
 /**
  * addMarker의 wrapper 함수
- * @param {kakao_map.Map} map
+ * @param {window.kakao.maps.Map} map
  * @param {object} restaurants 
  */
 function addMarkersFromRestaurants(map, restaurants) {
@@ -23,20 +23,22 @@ function addMarkersFromRestaurants(map, restaurants) {
                 close: res.closeTime == null ? null : new Date(res.closeTime),
                 breakStart: res.breakStart == null ? null : new Date(res.breakStart),
                 breakEnd: res.breakEnd  == null ? null : new Date(res.breakEnd),
-            });
+            },
+            res);
     }
 }
 
 /**
  * 마커를 추가하는 함수
- * @param {kakao_map.Map} map 
+ * @param {window.kakao.maps.Map} map 
  * @param {string} name 
  * @param {string} signature 
  * @param {string} phone 
  * @param {kakao_map.LatLng} latlng
  * @param {{open: Date, close: Date, breakStart: Date, breakEnd: Date}} time
+ * @param {object} restaurant
  */
-function addMarker(map, name, signature, phone, latlng, time = null) {
+function addMarker(map, name, signature, phone, latlng, time, restaurant) {
     const current_time = new Date();
     current_time.setFullYear(1970, 0, 1); // 현재 시간
     current_time.setHours(current_time.getHours() + 9);
@@ -83,7 +85,7 @@ function addMarker(map, name, signature, phone, latlng, time = null) {
     // + 버튼 클릭시, 추가 설명 오버레이를 보여주는 함수 호출
     const addButton = document.createElement('div');
     addButton.className = 'add-description-btn';
-    addButton.onclick = () => showDescription(index, map, marker);
+    addButton.onclick = () => showDescription(index, map, marker, restaurant);
 
     // .title 클래스를 가진 요소가 있는지 확인 후 추가
     const titleElement = document.querySelector('.title');
@@ -91,35 +93,69 @@ function addMarker(map, name, signature, phone, latlng, time = null) {
         titleElement.appendChild(addButton);
     }
 
-    // 나머지 코드는 그대로 유지
     window.kakao.maps.event.addListener(marker, 'click',
         () => overlay.setMap(overlay.getMap() ? null : map));
     overlay.setMap(null);
 
     eval(`window.closeOverlay${index} = () => { overlay.setMap(null); }`);
-    eval(`window.showDescription${index} = () => { showDescription(${index}, map, marker); }`);
-
+    
     index++;
 }
 
-function showDescription(index, map, marker,name) {
+
+
+/*
+
+[
+    {
+        "name": "스시톡톡",
+        "signature": "초밥",
+        "allowOne": true,
+        "allowMulti": false,
+        "category": "일식",
+        "distance": 0.651,
+        "phone": "02-812-5565    ",
+        "address": "흑석로 109 2층",
+        "latitude": 37.5083,
+        "longitude": 126.9611,
+        "openTime": "1970-01-01T11:00:00.000Z",
+        "closeTime": "1970-01-01T22:00:00.000Z",
+        "breakStart": "1970-01-01T15:30:00.000Z",
+        "breakEnd": "1970-01-01T17:00:00.000Z"
+    }
+]
+*/
+
+
+/**
+ * 
+ * @param {number} index 
+ * @param {window.kakao.maps.Map} map 
+ * @param {*} marker 
+ * @param {object} restaurant 
+ */
+function showDescription(index, map, marker, restaurant) {
     const descriptionOverlay = new window.kakao.maps.CustomOverlay({
         content: `<div class="expanded-overlay">
-            <div class="info">
-                <div class="title">
-                ${name}
-                <div class="close" onclick="closeDescription${index}()" title="닫기"></div>
-                </div>
-                <div class="body">
-                <div class="desc">
-                    <p>여기에 추가 설명을 넣으세요.</p>
-                </div>
-                </div>
-            </div>
+        <div class="info">
+        <div class="title">
+        ${restaurant.name}
+        <div class="close" onclick="closeDescription${index}()" title="닫기"></div>
+        </div>
+        <div class="body">
+        <div class="desc">
+        <p>${restaurant.signature}</p>
+        </div>
+        </div>
+        </div>
         </div>`,
         map: map,
         position: marker.getPosition()
     });
+    
+
+    // <저 dic class="desc"와 가장 가까운 </div> 사이에 <p></p> 써서 상세정보 넣으면 될듯
+    // restaurant 안에 뭐가 들었는지는 위에 작성해둔 주석 참고
 
     eval(`window.closeDescription${index} = () => { descriptionOverlay.setMap(null); }`);
     descriptionOverlay.setMap(map);
