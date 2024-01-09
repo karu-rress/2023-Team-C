@@ -86,7 +86,6 @@
 .add-description-btn {
   width: 20px;
   height: 18px;
-  background-color:; /* 예시 색상, 원하는 색상으로 변경하세요 */
   color: white;
   border: none;
   text-align: center;
@@ -112,6 +111,7 @@
 
 .expanded-overlay {
   width: 300px; /* 원하는 너비로 조절 */
+  height:300px;
   padding: 20px;
   background-color: #fff;
   border: 1px solid #ccc;
