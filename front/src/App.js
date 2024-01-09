@@ -26,8 +26,7 @@ function App() {
     <div>
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
-      <Category />
-      <SearchBox onSearch={handleSearch}/>   
+      <Category />  
       <KakaoMap search={searchTerm} category={categoryTerm}/>
       <Popup/>
     </div>
