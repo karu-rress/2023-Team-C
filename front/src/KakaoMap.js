@@ -144,7 +144,7 @@ function showDescription(index, map, marker, restaurant) {
         </div>
         <div class="body">
         <div class="desc">
-        <p>${restaurant.signature}</p>
+        <p>${restaurant.signature}<br>${restaurant.address}</p>
         </div>
         </div>
         </div>
