@@ -12,16 +12,22 @@ import React, { useEffect, useState } from 'react';
 import KakaoMap from './KakaoMap';
 import { SearchBox, TitleBar } from './UI';
 import './App.css';
+import Category from "./Category";
+
+
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [categoryTerm, setCategoryTerm] = useState('');
   const handleSearch = st => setSearchTerm(st);
 
   return (
     <div>
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
-      <KakaoMap search={searchTerm}/>
+      <Category />  
+      <KakaoMap search={searchTerm} category={categoryTerm}/>
+      <Popup/>
     </div>
   );
 }
