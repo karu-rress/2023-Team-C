@@ -27,7 +27,6 @@ function App() {
       <SearchBox onSearch={handleSearch}/>
       <Category />  
       <KakaoMap search={searchTerm} category={categoryTerm}/>
-      <Popup/>
     </div>
   );
 }

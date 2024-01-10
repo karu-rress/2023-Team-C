@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import  "./Category.css";
 
-const Category = () => {
+function Category() {
   const menuLst = ["menu1"];
   const [hide, setHide] = useState({
     menu1: false,
-    
   });
   const mouseEvent = (menuName, bool) => {
     const change = { ...hide };
     change[menuName] = bool;
     setHide(change);
   };
+  
   return (
     <nav className="nav">
       <ul className="navContainer">
