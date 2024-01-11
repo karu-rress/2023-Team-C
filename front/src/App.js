@@ -18,12 +18,13 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryTerm, setCategoryTerm] = useState('');
   const handleSearch = st => setSearchTerm(st);
-
+  const handleClick = ct => setCategoryTerm(ct);
+  
   return (
     <div>
       <TitleBar/>
       <SearchBox onSearch={handleSearch}/>
-      <Category />  
+      <Category onClick={handleClick}/>  
       <KakaoMap search={searchTerm} category={categoryTerm}/>
     </div>
   );

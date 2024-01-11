@@ -28,15 +28,20 @@ function SearchBox({ onSearch }) {
   );
 }
 
-function Category() {
+function Category({ onClick }) {
   const menuLst = ["menu1"];
   const [hide, setHide] = useState({ menu1: false });
+  const [categoryTerm, setCategoryTerm] = useState('');
   const mouseEvent = (menuName, bool) => {
     const change = { ...hide };
     change[menuName] = bool;
     setHide(change);
   };
-  
+  const click = (str) => {
+    setCategoryTerm(str);
+    onClick(categoryTerm);
+  };
+
   return (
     <nav className="nav">
       <ul className="navContainer">
@@ -56,12 +61,12 @@ function Category() {
             onMouseEnter={() => mouseEvent(v, true)}
             onMouseLeave={() => mouseEvent(v, false)}
           >
-            <li>한식</li>
-            <li>일식</li>
-            <li>중식</li>
-            <li>양식</li>
-            <li>분식</li>
-            <li>기타</li>
+            <li onClick={() => click("한식")}>한식</li>
+            <li onClick={() => click("일식")}>일식</li>
+            <li onClick={() => click("중식")}>중식</li>
+            <li onClick={() => click("양식")}>양식</li>
+            <li onClick={() => click("분식")}>분식</li>
+            <li onClick={() => click("기타")}>기타</li>
           </ul>
         ))}
       </div>
