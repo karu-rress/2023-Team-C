@@ -64,42 +64,47 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
 
     // 맛집 오버레이
     const overlay = new window.kakao.maps.CustomOverlay({
-        content: `<div class="wrap">
-        <div class="info">
-            <div class="title">
-            ${name}
-            <div class="add-description-btn"></div>
-            <div class="close" title="닫기"></div>
-            </div>
-            <div class="body">
-            <div class="desc">
-                <div class="signature">${signature}</div>
-                <div class="opened">${isOpened ? "영업중" : "영업종료"}</div>
-                <div class="phone">${phone}</div>
-            </div>
-            </div>
-        </div>
-        </div>`,
         map: map,
         position: marker.getPosition()
     })
 
-    // + 버튼 클릭시, 추가 설명 오버레이를 보여주는 함수 호출
-    const addButton = document.querySelector('.add-description-btn');
-    if (addButton) {
-        addButton.onclick = () => showDescription(map, marker, restaurant);
-    }
+    const wrapDiv = document.createElement('div');
+    wrapDiv.className = 'wrap';
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'info';
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'title';
+                const addButton = document.createElement('div');
+                addButton.className = 'add-description-btn';
+                addButton.onclick = () => showDescription(map, marker, restaurant);
+                const closeButton = document.createElement('div');
+                closeButton.className = 'close';
+                closeButton.onclick = () => overlay.setMap(null);
+            titleDiv.appendChild(document.createTextNode(name));
+            titleDiv.appendChild(addButton);
+            titleDiv.appendChild(closeButton);
 
-    // .title 클래스를 가진 요소가 있는지 확인 후 추가
-    const titleElement = document.querySelector('.title');
-    if (titleElement) {
-        titleElement.appendChild(addButton);
-    }
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'body';
+                const descDiv = document.createElement('div');
+                descDiv.className = 'desc';
+                    const sigDiv = document.createElement('div');
+                    sigDiv.appendChild(document.createTextNode(signature));
+                    const openedDiv = document.createElement('div');
+                    openedDiv.appendChild(document.createTextNode(isOpened ? "영업중" : "영업종료"));
+                    openedDiv.className = 'opened';
+                    const phoneDiv = document.createElement('div');
+                    phoneDiv.className = 'phone';
+                    phoneDiv.appendChild(document.createTextNode(phone));
+                descDiv.appendChild(sigDiv);
+                descDiv.appendChild(openedDiv);
+                descDiv.appendChild(phoneDiv);
+            bodyDiv.appendChild(descDiv);
+        infoDiv.appendChild(titleDiv);
+        infoDiv.appendChild(bodyDiv);
+    wrapDiv.appendChild(infoDiv);
 
-    const closeButton = document.querySelector('.close');
-    if (closeButton) {
-        closeButton.onclick = () => overlay.setMap(null);
-    }
+    overlay.setContent(wrapDiv);
 
     window.kakao.maps.event.addListener(marker, 'click',
         () => overlay.setMap(overlay.getMap() ? null : map));
@@ -109,27 +114,7 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
 
 
 
-/*
 
-[
-    {
-        "name": "스시톡톡",
-        "signature": "초밥",
-        "allowOne": true,
-        "allowMulti": false,
-        "category": "일식",
-        "distance": 0.651,
-        "phone": "02-812-5565    ",
-        "address": "흑석로 109 2층",
-        "latitude": 37.5083,
-        "longitude": 126.9611,
-        "openTime": "1970-01-01T11:00:00.000Z",
-        "closeTime": "1970-01-01T22:00:00.000Z",
-        "breakStart": "1970-01-01T15:30:00.000Z",
-        "breakEnd": "1970-01-01T17:00:00.000Z"
-    }
-]
-*/
 
 
 /**
@@ -140,35 +125,82 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
  */
 function showDescription(map, marker, restaurant) {
     const descriptionOverlay = new window.kakao.maps.CustomOverlay({
-        content: `<div class="expanded-overlay">
-        <div class="info">
-        <div class="title">
-        ${restaurant.name}
-        <div class="close" title="닫기"></div>
-        </div>
-        <div class="body">
-        <div class="desc">
-        <p>${restaurant.signature}<br>
-        ${restaurant.address}</p>
-        </div>
-        </div>
-        </div>
-        </div>`,
         map: map,
         position: marker.getPosition()
     });
     
+    const expandedDiv = document.createElement('div');
+    expandedDiv.className = 'expanded-overlay';
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'info';
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'title';
+                const closeDiv = document.createElement('div');
+                closeDiv.className = 'close';
+                closeDiv.onclick = () => descriptionOverlay.setMap(null);
+            titleDiv.appendChild(document.createTextNode(restaurant.name));
+            titleDiv.appendChild(closeDiv);
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'body';
+                const descDiv = document.createElement('div');
+                descDiv.className = 'desc';
 
-    // <저 dic class="desc"와 가장 가까운 </div> 사이에 <p></p> 써서 상세정보 넣으면 될듯
-    // restaurant 안에 뭐가 들었는지는 위에 작성해둔 주석 참고
+                
+                fetchAsync('/menu/' + restaurant.name).then(([status, menus]) => {
+                    // 메뉴 정보가 없을 때
+                    if (status != 200) {
+                        alert('아직 메뉴 정보가 업데이트 되지 않았습니다.\n기다려주세요!');
+                        return;
+                    }                    
 
-    const closeButton = document.querySelector('.close');
-    if (closeButton) {
-        closeButton.onclick = () => descriptionOverlay.setMap(null);
+                    let menu_list = [];
+                    // 메뉴 정보가 있을 때
+                    for (let m of menus) {
+                        menu_list.push([m.menu, m.price]);
+                    }
+
+                    
+
+                    /*
+
+[
+    {
+        "allowOne": true,
+        "allowMulti": false,
+        "distance": 0.651,
+        "openTime": "1970-01-01T11:00:00.000Z",
+        "closeTime": "1970-01-01T22:00:00.000Z",
+        "breakStart": "1970-01-01T15:30:00.000Z",
+        "breakEnd": "1970-01-01T17:00:00.000Z"
     }
+]
+*/
+descDiv.appendChild(document.createElement('br'));
+                descDiv.appendChild(document.createTextNode(`${restaurant.signature} (${restaurant.category})`));
+                descDiv.appendChild(document.createElement('br'));
+                descDiv.appendChild(document.createElement('br'));
 
-    // eval(`window.closeDescription${index} = () => { descriptionOverlay.setMap(null); }`);
-    descriptionOverlay.setMap(map);
+                for (const [m, p] of menu_list) {
+                    descDiv.appendChild(document.createTextNode(`${m}: ${p}원`));
+                    descDiv.appendChild(document.createElement('br'));
+                }
+                
+                descDiv.appendChild(document.createElement('br'));
+                descDiv.appendChild(document.createTextNode(`주소: 서울시 동작구 ${restaurant.address}`));
+                descDiv.appendChild(document.createElement('br'));
+                descDiv.appendChild(document.createTextNode(`(${restaurant.distance} km)`));
+                descDiv.appendChild(document.createElement('br'));
+                descDiv.appendChild(document.createTextNode(`전화번호: ${restaurant.phone}`));
+                descDiv.appendChild(document.createElement('br'));
+                        bodyDiv.appendChild(descDiv);
+                        infoDiv.appendChild(titleDiv);
+                        infoDiv.appendChild(bodyDiv);
+                        expandedDiv.appendChild(infoDiv);
+                    
+                        descriptionOverlay.setContent(expandedDiv);
+                    
+                        descriptionOverlay.setMap(map);
+                });
 }
 
 

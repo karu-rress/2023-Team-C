@@ -29,10 +29,10 @@
 
 .info .title {
   padding: 5px 0 0 10px;
-  height: 20px;  /* 칸 크기 조정 */
+  height: 30px;  /* 칸 크기 조정 */
   background: #eee;
   border-bottom: 1px solid #ddd;
-  font-size: 14px;  /* 칸 크기 조정 */
+  font-size: 20px;  /* 칸 크기 조정 */
   font-weight: bold;
 }
 
@@ -53,7 +53,7 @@
 .info .desc {
   position: relative;
   margin: 8px 0 0 8px;  /* 칸 크기 조정 */
-  height: 50px;  /* 칸 크기 조정 */
+  height: 250px;  /* 칸 크기 조정 */
 }
 
 .desc .signature {
