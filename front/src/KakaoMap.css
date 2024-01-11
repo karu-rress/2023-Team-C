@@ -1,85 +1,120 @@
 #kakaomap {
-    width: 100vw;
-    height: calc(100vh - 125px); /* Title Bar의 padding도 고려 */
+  width: 100vw;
+  height: calc(100vh - 125px - 50px); /* Title Bar의 padding도 고려 */
 }
 
 .wrap {
-    position: absolute;
-    left: 0;
-    bottom: 40px;
-    width: 200px;  /* 칸 크기 조정 */
-    height: 100px;  /* 칸 크기 조정 */
-    margin-left: -100px;  /* 칸 크기 조정 */
-    text-align: left;
-    overflow: hidden;
-    font-size: 12px;
-    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
-    line-height: 1.5;
-  }
-  
-  .wrap .info {
-    width: 198px;  /* 칸 크기 조정 */
-    height: 98px;  /* 칸 크기 조정 */
-    border-radius: 5px;
-    border-bottom: 2px solid #ccc;
-    border-right: 1px solid #ccc;
-    overflow: hidden;
-    background: #fff;
-  }
-  
-  .info .title {
-    padding: 5px 0 0 10px;
-    height: 20px;  /* 칸 크기 조정 */
-    background: #eee;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;  /* 칸 크기 조정 */
-    font-weight: bold;
-  }
-  
-  .info .close {
-    position: absolute;
-    top: 5px;  /* 칸 크기 조정 */
-    right: 5px;  /* 칸 크기 조정 */
-    color: #888;
-    width: 17px;
-    height: 17px;
-    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
-  }
-  
-  .info .body {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .info .desc {
-    position: relative;
-    margin: 8px 0 0 8px;  /* 칸 크기 조정 */
-    height: 50px;  /* 칸 크기 조정 */
-  }
-  
-  .desc .signature {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .desc .opened {
-    font-size: 10px;  /* 칸 크기 조정 */
-    color: #888;
-    margin-top: -2px;
-  }
-  
-  .info:after {
-    content: '';
-    position: absolute;
-    margin-left: -6px;  /* 칸 크기 조정 */
-    left: 50%;
-    bottom: 0;
-    width: 11px;  /* 칸 크기 조정 */
-    height: 6px;  /* 칸 크기 조정 */
-    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
-  }
-  
-  .info .link {
-    color: #5085BB;
-  }
+  position: absolute;
+  left: 0;
+  bottom: 40px;
+  width: 200px;  /* 칸 크기 조정 */
+  height: 100px;  /* 칸 크기 조정 */
+  margin-left: -100px;  /* 칸 크기 조정 */
+  text-align: left;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+  line-height: 1.5;
+}
+
+.wrap .info {
+  width: 298px;  /* 칸 크기 조정 */
+  height: 98px;  /* 칸 크기 조정 */
+  border-radius: 5px;
+  border-bottom: 2px solid #ccc;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  background: #fff;
+}
+
+.info .title {
+  padding: 5px 0 0 10px;
+  height: 30px;  /* 칸 크기 조정 */
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+  font-size: 20px;  /* 칸 크기 조정 */
+  font-weight: bold;
+}
+
+.info .close {
+  position: absolute;
+  top: 5px;  /* 칸 크기 조정 */
+  right: 5px;  /* 칸 크기 조정 */
+  color: #888;
+  width: 17px;
+  height: 17px;
+  background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+.info .body {
+  position: relative;
+  overflow: hidden;
+}
+
+.info .desc {
+  position: relative;
+  margin: 8px 0 0 8px;  /* 칸 크기 조정 */
+  height: 250px;  /* 칸 크기 조정 */
+}
+
+.desc .signature {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desc .opened {
+  font-size: 10px;  /* 칸 크기 조정 */
+  color: #888;
+  margin-top: -2px;
+}
+
+.info:after {
+  content: '';
+  position: absolute;
+  margin-left: -6px;  /* 칸 크기 조정 */
+  left: 50%;
+  bottom: 0;
+  width: 11px;  /* 칸 크기 조정 */
+  height: 6px;  /* 칸 크기 조정 */
+  background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+}
+
+.info .link {
+  color: #5085BB;
+}
+
+.add-description-btn {
+  width: 20px;
+  height: 18px;
+  color: white;
+  border: none;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 4px; /* 원하는 위치로 조절하세요 */
+  right: 31px; /* 원하는 위치로 조절하세요 */
+}
+
+.add-description-btn::before,
+.add-description-btn::after {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 2px; /* +의 굵기 조절 */
+  background-color: rgba(26, 26, 26, 0.699); /* +의 색상 조절 */
+}
+
+.add-description-btn::before {
+  transform: rotate(90deg);
+}
+
+.expanded-overlay {
+  width: 300px; /* 원하는 너비로 조절 */
+  height:300px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
