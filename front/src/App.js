@@ -15,7 +15,6 @@ import './App.css';
 import Category from "./Category";
 
 
-
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryTerm, setCategoryTerm] = useState('');
