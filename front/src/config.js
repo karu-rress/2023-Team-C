@@ -4,7 +4,7 @@
  *  Frontend configuration
  * 
  *  Created: 2024-01-08
- *  Last modified: -
+ *  Last modified: 2024-01-08
  * 
  */
 

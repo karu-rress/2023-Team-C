@@ -113,10 +113,6 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
 }
 
 
-
-
-
-
 /**
  * 
  * @param {window.kakao.maps.Map} map 
@@ -131,76 +127,60 @@ function showDescription(map, marker, restaurant) {
     
     const expandedDiv = document.createElement('div');
     expandedDiv.className = 'expanded-overlay';
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'info';
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'title';
-                const closeDiv = document.createElement('div');
-                closeDiv.className = 'close';
-                closeDiv.onclick = () => descriptionOverlay.setMap(null);
-            titleDiv.appendChild(document.createTextNode(restaurant.name));
-            titleDiv.appendChild(closeDiv);
-            const bodyDiv = document.createElement('div');
-            bodyDiv.className = 'body';
-                const descDiv = document.createElement('div');
-                descDiv.className = 'desc';
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'info';
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'title';
+    const closeDiv = document.createElement('div');
+    closeDiv.className = 'close';
+    closeDiv.onclick = () => descriptionOverlay.setMap(null);
+    titleDiv.appendChild(document.createTextNode(restaurant.name));
+    titleDiv.appendChild(closeDiv);
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'body';
+    const descDiv = document.createElement('div');
+    descDiv.className = 'desc';
 
                 
-                fetchAsync('/menu/' + restaurant.name).then(([status, menus]) => {
-                    // 메뉴 정보가 없을 때
-                    if (status != 200) {
-                        alert('아직 메뉴 정보가 업데이트 되지 않았습니다.\n기다려주세요!');
-                        return;
-                    }                    
+    fetchAsync('/menu/' + restaurant.name).then(([status, menus]) => {
+        // 메뉴 정보가 없을 때
+        if (status != 200) {
+            alert('아직 메뉴 정보가 업데이트 되지 않았습니다.\n기다려주세요!');
+            return;
+        }                    
 
-                    let menu_list = [];
-                    // 메뉴 정보가 있을 때
-                    for (let m of menus) {
-                        menu_list.push([m.menu, m.price]);
-                    }
+        let menu_list = [];
+        // 메뉴 정보가 있을 때
+        for (let m of menus) {
+            menu_list.push([m.menu, m.price]);
+        }
 
-                    
+        descDiv.appendChild(document.createElement('br'));
+        descDiv.appendChild(document.createTextNode(`${restaurant.signature} (${restaurant.category})`));
+        descDiv.appendChild(document.createElement('br'));
+        descDiv.appendChild(document.createElement('br'));
 
-                    /*
-
-[
-    {
-        "allowOne": true,
-        "allowMulti": false,
-        "distance": 0.651,
-        "openTime": "1970-01-01T11:00:00.000Z",
-        "closeTime": "1970-01-01T22:00:00.000Z",
-        "breakStart": "1970-01-01T15:30:00.000Z",
-        "breakEnd": "1970-01-01T17:00:00.000Z"
-    }
-]
-*/
-descDiv.appendChild(document.createElement('br'));
-                descDiv.appendChild(document.createTextNode(`${restaurant.signature} (${restaurant.category})`));
-                descDiv.appendChild(document.createElement('br'));
-                descDiv.appendChild(document.createElement('br'));
-
-                for (const [m, p] of menu_list) {
-                    descDiv.appendChild(document.createTextNode(`${m}: ${p}원`));
-                    descDiv.appendChild(document.createElement('br'));
-                }
-                
-                descDiv.appendChild(document.createElement('br'));
-                descDiv.appendChild(document.createTextNode(`주소: 서울시 동작구 ${restaurant.address}`));
-                descDiv.appendChild(document.createElement('br'));
-                descDiv.appendChild(document.createTextNode(`(${restaurant.distance} km)`));
-                descDiv.appendChild(document.createElement('br'));
-                descDiv.appendChild(document.createTextNode(`전화번호: ${restaurant.phone}`));
-                descDiv.appendChild(document.createElement('br'));
-                        bodyDiv.appendChild(descDiv);
-                        infoDiv.appendChild(titleDiv);
-                        infoDiv.appendChild(bodyDiv);
-                        expandedDiv.appendChild(infoDiv);
-                    
-                        descriptionOverlay.setContent(expandedDiv);
-                    
-                        descriptionOverlay.setMap(map);
-                });
+        for (const [m, p] of menu_list) {
+            descDiv.appendChild(document.createTextNode(`${m}: ${p}원`));
+            descDiv.appendChild(document.createElement('br'));
+        }
+        
+        descDiv.appendChild(document.createElement('br'));
+        descDiv.appendChild(document.createTextNode(`주소: 서울시 동작구 ${restaurant.address}`));
+        descDiv.appendChild(document.createElement('br'));
+        descDiv.appendChild(document.createTextNode(`(${restaurant.distance} km)`));
+        descDiv.appendChild(document.createElement('br'));
+        descDiv.appendChild(document.createTextNode(`전화번호: ${restaurant.phone}`));
+        descDiv.appendChild(document.createElement('br'));
+        bodyDiv.appendChild(descDiv);
+        infoDiv.appendChild(titleDiv);
+        infoDiv.appendChild(bodyDiv);
+        expandedDiv.appendChild(infoDiv);
+    
+        descriptionOverlay.setContent(expandedDiv);
+    
+        descriptionOverlay.setMap(map);
+        });
 }
 
 
@@ -231,10 +211,7 @@ function KakaoMap({ search, category }) {
 
         // 카카오맵 API 기본 설정
         const container = document.getElementById('kakaomap');
-        const options = {
-            center: initPos,
-            level: 4
-        };
+        const options = { center: initPos, level: 4 };
         const map = new kakao_map.Map(container, options);
 
         if (search) {
@@ -248,10 +225,6 @@ function KakaoMap({ search, category }) {
         }
         else if (category) {
             fetchAsync('/category/' + category).then(([status, restaurants]) => {
-                if (status === 404) {
-                    alert('검색 결과가 없습니다.');
-                    return; // 검색 결과 없으면 마커 생성 중단
-                }
                 addMarkersFromRestaurants(map, restaurants);
             });
         }
