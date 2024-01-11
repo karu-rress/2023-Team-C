@@ -10,10 +10,8 @@
 
 import React, { useEffect, useState } from 'react';
 import KakaoMap from './KakaoMap';
-import { SearchBox, TitleBar } from './UI';
+import { SearchBox, TitleBar, Category } from './UI';
 import './App.css';
-import Category from "./Category";
-
 
 
 function App() {

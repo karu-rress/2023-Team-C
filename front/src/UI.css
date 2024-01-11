@@ -1,27 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;500;700;900&display=swap');
+
+:root {
+    --height: 50px;
+    --background: #00ADB5;
+    --black: #222831;
+    --white: #EEEEEE;
+}
+
 #titlebar {
     margin: 0;
     padding: 0;
     display: flex;
     width: 100vw;
     height: 60px;
-    background-color: deepskyblue;
+    background-color: var(--background);
     justify-content: center;
     flex-direction: column;
 }
 
 #title {
     padding-left: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 30px;
+    color: var(--black);
+    font-weight: 500;
 }
 
 #searchBox {
     display: flex;
     width: 100vw;
-    height: 50px;
-    background-color: deepskyblue;
+    height: var(--height);
+    background-color: var(--background);
     padding: 5px 0px 10px 0px;
     justify-content: center;
     flex-direction: row;
@@ -30,13 +39,95 @@
 #searchBox input {
     font-size: 18px;
     width: 75vw;
-    border-color: rgb(31, 74, 109);
+    border-color: var(--black);
     border-radius: 10px;
+    background-color: var(--white);
+    padding-left: 10px;
+    margin-right: 15px;
 }
 
 #searchBox button {
     font-size: 18px;
     width: 13vw;
-    border-color: rgb(31, 74, 109);
+    background-color: var(--black);
     border-radius: 10px;
+    color: #EEEEEE;
+    font-weight: bold;
 }
+
+    
+.nav {
+    height: var(--height);
+    overflow: hidden;
+    transition: 0.25s ease-in-out;
+    background-color: var(--background);
+    width: 100%;
+}
+
+.nav:hover {
+    height: 230px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.nav .navContainer {
+    height: var(--height);
+    width: 100%;
+    display: flex;
+    margin: auto;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+}
+.nav .navContainer .active {
+    background-color: var(--white);
+    color: var(--black);
+    width: 100%;
+}
+.nav .navContainer .none {
+    background-color: none;
+}
+
+.nav .navContainer li {
+    width: 100%;
+    height: 100%;
+    list-style-type: none;
+    font-size: 19px;
+    color: var(--black);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav .navContainer li p {
+    margin: 0;
+}
+
+.nav .detailMenu {
+    display: flex;
+    overflow: hidden;
+}
+
+.nav .detailMenu ul {
+    margin: auto;
+    justify-content: space-around;
+    padding: 0;
+    width: 100%;
+}
+
+.nav .detailMenu ul li {
+    text-align: center;
+    list-style-type: none;
+    margin-bottom: 10px;
+    color: var(--black);
+    font-weight: 600;
+    width: 100%;
+}
+.nav .detailMenu ul li:hover {
+    cursor: pointer;
+    background-color: #393E46;
+    color: var(--white);
+    width: 100%;
+}
+  
