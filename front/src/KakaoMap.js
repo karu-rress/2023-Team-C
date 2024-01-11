@@ -7,6 +7,7 @@ const kakao_map = window.kakao.maps;
 // 처음 지도가 표시될 때의 위치
 const initPos = new window.kakao.maps.LatLng(37.5051, 126.9571);
 
+const markers = [];
 let index = 0;
 
 /**
@@ -67,7 +68,8 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
         <div class="info">
             <div class="title">
             ${name}
-            <div class="close" onclick="closeOverlay${index}()" title="닫기"></div>
+            <div class="add-description-btn"></div>
+            <div class="close" title="닫기"></div>
             </div>
             <div class="body">
             <div class="desc">
@@ -83,9 +85,10 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
     })
 
     // + 버튼 클릭시, 추가 설명 오버레이를 보여주는 함수 호출
-    const addButton = document.createElement('div');
-    addButton.className = 'add-description-btn';
-    addButton.onclick = () => showDescription(index, map, marker, restaurant);
+    const addButton = document.querySelector('.add-description-btn');
+    if (addButton) {
+        addButton.onclick = () => showDescription(map, marker, restaurant);
+    }
 
     // .title 클래스를 가진 요소가 있는지 확인 후 추가
     const titleElement = document.querySelector('.title');
@@ -93,13 +96,15 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
         titleElement.appendChild(addButton);
     }
 
+    const closeButton = document.querySelector('.close');
+    if (closeButton) {
+        closeButton.onclick = () => overlay.setMap(null);
+    }
+
     window.kakao.maps.event.addListener(marker, 'click',
         () => overlay.setMap(overlay.getMap() ? null : map));
-    overlay.setMap(null);
 
-    eval(`window.closeOverlay${index} = () => { overlay.setMap(null); }`);
-    
-    index++;
+    overlay.setMap(null);
 }
 
 
@@ -129,22 +134,22 @@ function addMarker(map, name, signature, phone, latlng, time, restaurant) {
 
 /**
  * 
- * @param {number} index 
  * @param {window.kakao.maps.Map} map 
  * @param {*} marker 
  * @param {object} restaurant 
  */
-function showDescription(index, map, marker, restaurant) {
+function showDescription(map, marker, restaurant) {
     const descriptionOverlay = new window.kakao.maps.CustomOverlay({
         content: `<div class="expanded-overlay">
         <div class="info">
         <div class="title">
         ${restaurant.name}
-        <div class="close" onclick="closeDescription${index}()" title="닫기"></div>
+        <div class="close" title="닫기"></div>
         </div>
         <div class="body">
         <div class="desc">
-        <p>${restaurant.signature}<br>${restaurant.address}</p>
+        <p>${restaurant.signature}<br>
+        ${restaurant.address}</p>
         </div>
         </div>
         </div>
@@ -157,7 +162,12 @@ function showDescription(index, map, marker, restaurant) {
     // <저 dic class="desc"와 가장 가까운 </div> 사이에 <p></p> 써서 상세정보 넣으면 될듯
     // restaurant 안에 뭐가 들었는지는 위에 작성해둔 주석 참고
 
-    eval(`window.closeDescription${index} = () => { descriptionOverlay.setMap(null); }`);
+    const closeButton = document.querySelector('.close');
+    if (closeButton) {
+        closeButton.onclick = () => descriptionOverlay.setMap(null);
+    }
+
+    // eval(`window.closeDescription${index} = () => { descriptionOverlay.setMap(null); }`);
     descriptionOverlay.setMap(map);
 }
 
@@ -214,12 +224,14 @@ function KakaoMap({ search, category }) {
             });
         }
         else {
-            
+            fetchAsync('/getall').then(([_, restaurants]) => {
+                addMarkersFromRestaurants(map, restaurants);
+            });
         }
     }, [search, category]); // search 또는 category가 갱신될 때마다 마커 다시 그리기
 
     return (
-        <div id="kakaomap" />
+        <div id="kakaomap"/>
     );
 }
 
