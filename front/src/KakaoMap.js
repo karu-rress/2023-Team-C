@@ -233,7 +233,8 @@ function KakaoMap({ search, category }) {
                 addMarkersFromRestaurants(map, restaurants);
             });
         }
-    }, [search, category]); // search 또는 category가 갱신될 때마다 마커 다시 그리기
+    }, [search, category]);
+    // search 또는 category가 갱신될 때마다 마커 다시 그리기
 
     return (
         <div id="kakaomap"/>
